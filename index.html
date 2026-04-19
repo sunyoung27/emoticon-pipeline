@@ -403,19 +403,34 @@ function clearAllData(){
 // 이미지
 // ════════════════════════════
 function handleFile(file){
-  if(!file||!file.type.startsWith('image/')){showToast('이미지 파일만 가능해요');return}
-  currentName=file.name||'이미지';currentMime=file.type;
+  if(!file){showToast('파일을 인식하지 못했어요');return}
+  // MIME 타입 없는 경우 확장자로 보완
+  let mime=file.type;
+  if(!mime||mime===''){
+    const ext=file.name.split('.').pop().toLowerCase();
+    const map={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',gif:'image/gif',webp:'image/webp',bmp:'image/bmp'};
+    mime=map[ext]||'image/jpeg';
+  }
+  if(!mime.startsWith('image/')){showToast('이미지 파일만 가능해요 (jpg/png/gif/webp)');return}
+  // 파일 크기 체크 (10MB 초과 시 경고)
+  if(file.size>10*1024*1024){showToast('파일이 너무 커요. 10MB 이하 이미지를 사용해주세요');return}
+  currentName=file.name||'이미지';currentMime=mime;
   const reader=new FileReader();
   reader.onload=e=>{
-    currentBase64=e.target.result.split(',')[1];
-    lastThumb=e.target.result;
-    document.getElementById('previewImg').src=e.target.result;
-    document.getElementById('previewName').textContent=currentName;
-    document.getElementById('previewWrap').classList.add('show');
-    document.getElementById('resultBox').innerHTML='';
-    document.getElementById('errorBox').innerHTML='';
-    lastResult=null;
+    try{
+      const result=e.target.result;
+      if(!result||!result.includes(',')){showToast('이미지를 읽을 수 없어요');return}
+      currentBase64=result.split(',')[1];
+      lastThumb=result;
+      document.getElementById('previewImg').src=result;
+      document.getElementById('previewName').textContent=currentName+' ('+Math.round(file.size/1024)+'KB)';
+      document.getElementById('previewWrap').classList.add('show');
+      document.getElementById('resultBox').innerHTML='';
+      document.getElementById('errorBox').innerHTML='';
+      lastResult=null;
+    }catch(err){showToast('이미지 처리 중 오류: '+err.message)}
   };
+  reader.onerror=()=>showToast('파일 읽기 실패. 다른 이미지를 시도해보세요');
   reader.readAsDataURL(file);
 }
 function clearImage(){
@@ -428,10 +443,21 @@ function clearImage(){
 async function pasteFromClipboard(){
   try{
     const items=await navigator.clipboard.read();
-    for(const item of items)for(const type of item.types)
-      if(type.startsWith('image/')){handleFile(new File([await item.getType(type)],'clipboard.png',{type}));return}
-    showToast('클립보드에 이미지가 없어요');
-  }catch{showToast('Ctrl+V 로 붙여넣기 해보세요 💡')}
+    let found=false;
+    for(const item of items){
+      for(const type of item.types){
+        if(type.startsWith('image/')){
+          const blob=await item.getType(type);
+          handleFile(new File([blob],'clipboard.png',{type}));
+          found=true;return;
+        }
+      }
+    }
+    if(!found)showToast('클립보드에 이미지가 없어요. 이미지를 먼저 복사해주세요');
+  }catch(err){
+    // 권한 없을 때 안내
+    showToast('Ctrl+V 키를 눌러서 붙여넣어 보세요 💡');
+  }
 }
 
 // ════════════════════════════
