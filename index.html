@@ -330,8 +330,21 @@ async function runAnalysis(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:1000,
-        system:`당신은 카카오 이모티콘 심사 전문가입니다. 이모티콘 이미지를 분석하고 반드시 아래 JSON 형식으로만 응답하세요. 마크다운 없이 순수 JSON만 출력하세요.
-{"trend_fit":숫자(1-10),"character_appeal":숫자(1-10),"usability":숫자(1-10),"summary":"한 줄 핵심 요약 (25자 이내)","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2"],"strategy_tips":"내 캐릭터 제작에 적용할 구체적 전략 (2-3문장)","approval_chance":"높음|보통|낮음"}`,
+        system:`당신은 카카오 이모티콘 심사 전문가입니다. 냉정하고 객관적으로 분석하세요.
+
+점수 기준:
+- trend_fit: 현재 카카오 승인 트렌드 일치도 (손그림체, 공감 텍스트, 단순 배경 등)
+- character_appeal: 캐릭터 개성, 표정 다양성, 일관성, 독창성
+- usability: 실제 대화에서의 활용도 (텍스트 공감도, 상황 다양성)
+
+점수 규칙 (반드시 준수):
+- 세 점수는 반드시 서로 달라야 합니다. 동일 점수 금지.
+- 각 항목을 독립적으로 평가. 전체 인상으로 통일 금지.
+- 범위: 2~9점. 평균 수준은 4~6점, 우수하면 7~8점.
+- 10점, 1점은 극히 예외적인 경우만 허용.
+
+반드시 아래 JSON 형식으로만 응답. 마크다운 없이 순수 JSON만 출력.
+{"trend_fit":숫자,"character_appeal":숫자,"usability":숫자,"summary":"한 줄 핵심 요약 (25자 이내)","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2"],"strategy_tips":"내 캐릭터 제작에 적용할 구체적 전략 (2-3문장)","approval_chance":"높음|보통|낮음"}`,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
           {type:'text',text:`이 카카오 이모티콘 이미지를 전문적으로 분석해주세요.\n\n${charContext}\n\n트렌드 적합성, 캐릭터 매력도, 실사용성을 평가하고 카카오 심사 통과 가능성과 제작 전략을 알려주세요.`}
@@ -372,7 +385,7 @@ function scoreBox(label,val){
 }
 function persistHistory(r){
   const h=DB.getHistory();
-  h.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR'),thumb:document.getElementById('previewImg').src,char:DB.getChar().slice(0,30)||'범용',trend:r.trend_fit,appeal:r.character_appeal,usability:r.usability,summary:r.summary,tips:r.strategy_tips,chance:r.approval_chance});
+  h.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR'),thumb:document.getElementById('previewImg').src,char:DB.getChar().slice(0,30)||'범용',trend:r.trend_fit,appeal:r.character_appeal,usability:r.usability,summary:r.summary,tips:r.strategy_tips,chance:r.approval_chance,strengths:r.strengths||[],improvements:r.improvements||[]});
   if(h.length>200)h.pop();DB.saveHistory(h);
 }
 
@@ -380,7 +393,7 @@ function renderHistory(){
   const h=DB.getHistory(),el=document.getElementById('historyList');
   if(!h.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>아직 분석 기록이 없어요.<br>이모티콘을 분석하면 여기에 쌓여요!</p></div>';return}
   const ct=c=>c==='높음'?'#4fd97a':c==='낮음'?'#ff6b6b':'#ffd166';
-  el.innerHTML=h.map(i=>`<div class="hist-item">
+  el.innerHTML=h.map(i=>`<div class="hist-item" onclick="toggleDetail(${i.id})" style="cursor:pointer">
     <img class="hist-thumb" src="${i.thumb}" alt="">
     <div class="hist-body">
       <div class="hist-top"><span class="hist-date">${i.date}</span>${i.char?`<span class="hist-char">${i.char}</span>`:''}</div>
@@ -391,9 +404,18 @@ function renderHistory(){
         ${i.chance?`<span class="hist-score" style="color:${ct(i.chance)}">심사 ${i.chance}</span>`:''}
       </div>
       <div class="hist-summary">${i.summary||''}</div>
+      <div id="detail-${i.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        ${(i.strengths&&i.strengths.length)?'<div style="margin-bottom:8px"><div style="font-size:10px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">✅ 강점</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+i.strengths.map(s=>'<span style="background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.25);color:#4fd97a;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700">'+s+'</span>').join('')+'</div></div>':''} 
+        ${(i.improvements&&i.improvements.length)?'<div style="margin-bottom:8px"><div style="font-size:10px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">🔧 개선 포인트</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+i.improvements.map(s=>'<span style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.25);color:#ff6b6b;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700">'+s+'</span>').join('')+'</div></div>':''} 
+        ${i.tips?'<div><div style="font-size:10px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">💡 전략 메모</div><div style="font-size:11px;color:var(--text2);line-height:1.6">'+i.tips+'</div></div>':''} 
+      </div>
     </div>
-    <button class="hist-del" onclick="deleteItem(${i.id})">✕</button>
+    <button class="hist-del" onclick="event.stopPropagation();deleteItem(${i.id})">✕</button>
   </div>`).join('');
+}
+function toggleDetail(id){
+  const el=document.getElementById('detail-'+id);
+  if(el)el.style.display=el.style.display==='none'?'block':'none';
 }
 function deleteItem(id){DB.saveHistory(DB.getHistory().filter(i=>i.id!==id));renderHistory();renderReport();updateHistCount();showToast('삭제했어요')}
 
