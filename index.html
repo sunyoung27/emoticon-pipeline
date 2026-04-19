@@ -666,14 +666,7 @@ function renderResult(r,isMine){
 }
 
 function renderKakaoChecklist(cl){
-  if(!cl)return'';
-  const groups=[
-    {label:'구성',items:[1,2,3,4,5]},
-    {label:'캐릭터',items:[6,7,8,9,10]},
-    {label:'컨셉',items:[11,12,13,14,15]},
-    {label:'텍스트',items:[16,17,18,19,20,21]},
-    {label:'기술',items:[22]},
-  ];
+  if(!cl)return '';
   const labels={
     1:'구성 일관성',2:'제목·구성 조화',3:'구성 다양성',4:'구성 재미',5:'타겟 명확성',
     6:'캐릭터 비율',7:'배치 순서',8:'형태 자연스러움',9:'캐릭터 완성도',10:'그림만으로 전달',
@@ -681,42 +674,49 @@ function renderKakaoChecklist(cl){
     16:'폰트 적합성',17:'텍스트 가독성',18:'폰트 크기',19:'멘트 배치',20:'멘트 길이',21:'흰색 스트로크',
     22:'이미지 사이즈'
   };
-  const passCount=Object.values(cl).filter(v=>v===true).length;
-  const failCount=Object.values(cl).filter(v=>v===false).length;
-  const needCount=Object.values(cl).filter(v=>v==='확인필요').length;
-
-  const groupHtml=groups.map(g=>`
-    <div style="margin-bottom:10px">
-      <div style="font-size:9px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">${g.label}</div>
-      ${g.items.map(n=>{
-        const v=cl[n]||cl[String(n)];
-        const ok=v===true;const fail=v===false;
-        return\`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
-          <span style="flex-shrink:0;font-size:13px;color:\${ok?'var(--green)':fail?'var(--red)':'var(--yellow)'}">\${ok?'✓':fail?'✗':'?'}</span>
-          <span style="color:\${ok?'var(--text)':fail?'var(--red)':'var(--text3)'};\${fail?'font-weight:800':''}">\${n}. \${labels[n]}</span>
-        </div>\`;
-      }).join('')}
-    </div>`).join('');
-
-  return\`<div class="card">
-    <div class="card-title">📋 카카오 공식 체크리스트</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <div style="flex:1;background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.2);border-radius:8px;padding:8px;text-align:center">
-        <div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--green)">\${passCount}</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px">통과</div>
-      </div>
-      <div style="flex:1;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);border-radius:8px;padding:8px;text-align:center">
-        <div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--red)">\${failCount}</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px">미통과</div>
-      </div>
-      <div style="flex:1;background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:8px;text-align:center">
-        <div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--yellow)">\${needCount}</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:2px">확인필요</div>
-      </div>
-    </div>
-    \${groupHtml}
-  </div>\`;
+  const groups=[
+    {label:'구성',items:[1,2,3,4,5]},
+    {label:'캐릭터',items:[6,7,8,9,10]},
+    {label:'컨셉',items:[11,12,13,14,15]},
+    {label:'텍스트',items:[16,17,18,19,20,21]},
+    {label:'기술',items:[22]}
+  ];
+  let passCount=0,failCount=0,needCount=0;
+  Object.values(cl).forEach(v=>{
+    if(v===true)passCount++;
+    else if(v===false)failCount++;
+    else needCount++;
+  });
+  let groupHtml='';
+  groups.forEach(function(g){
+    groupHtml+='<div style="margin-bottom:10px">';
+    groupHtml+='<div style="font-size:9px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">'+g.label+'</div>';
+    g.items.forEach(function(n){
+      var v=cl[n]||cl[String(n)];
+      var ok=v===true,fail=v===false;
+      var color=ok?'var(--green)':fail?'var(--red)':'var(--yellow)';
+      var icon=ok?'✓':fail?'✗':'?';
+      var textColor=ok?'var(--text)':fail?'var(--red)':'var(--text3)';
+      var bold=fail?'font-weight:800':'';
+      groupHtml+='<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">';
+      groupHtml+='<span style="flex-shrink:0;font-size:13px;color:'+color+'">'+icon+'</span>';
+      groupHtml+='<span style="color:'+textColor+';'+bold+'">'+n+'. '+labels[n]+'</span>';
+      groupHtml+='</div>';
+    });
+    groupHtml+='</div>';
+  });
+  var html='<div class="card">';
+  html+='<div class="card-title">📋 카카오 공식 체크리스트</div>';
+  html+='<div style="display:flex;gap:8px;margin-bottom:12px">';
+  html+='<div style="flex:1;background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--green)">'+passCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">통과</div></div>';
+  html+='<div style="flex:1;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--red)">'+failCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">미통과</div></div>';
+  html+='<div style="flex:1;background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--yellow)">'+needCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">확인필요</div></div>';
+  html+='</div>';
+  html+=groupHtml;
+  html+='</div>';
+  return html;
 }
+
 
 function scoreBox(label,val){
   return`<div class="score-box"><div class="score-num ${scoreColor(val)}">${val}</div><div class="score-lbl">${label}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${val*10}%"></div></div></div>`;
