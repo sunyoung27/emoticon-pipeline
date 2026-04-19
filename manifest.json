@@ -1,0 +1,17 @@
+{
+  "name": "이모티콘 파이프라인",
+  "short_name": "이모티콘",
+  "description": "카카오 이모티콘 트렌드 분석 & 제작 파이프라인",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f0f14",
+  "theme_color": "#7C6AF7",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
