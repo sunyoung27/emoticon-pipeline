@@ -11,142 +11,191 @@
 <title>이모티콘 파이프라인</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@300;500;700&family=Nanum+Gothic:wght@400;700;800&display=swap');
-:root {
-  --bg:#0f0f14; --bg2:#17171f; --bg3:#1e1e2a;
-  --border:#2a2a3a; --border2:#383850;
-  --accent:#7C6AF7; --accent2:#a89eff; --accent3:#5448d4;
-  --green:#4fd97a; --yellow:#ffd166; --red:#ff6b6b;
-  --text:#f0f0f8; --text2:#9090b0; --text3:#5a5a7a;
-  --radius:16px; --radius-sm:10px;
+:root{
+  --bg:#0f0f14;--bg2:#17171f;--bg3:#1e1e2a;
+  --border:#2a2a3a;--border2:#383850;
+  --accent:#7C6AF7;--accent2:#a89eff;--accent3:#5448d4;
+  --green:#4fd97a;--yellow:#ffd166;--red:#ff6b6b;--star:#FFD166;
+  --text:#f0f0f8;--text2:#9090b0;--text3:#5a5a7a;
+  --radius:16px;--radius-sm:10px;
   --shadow:0 8px 32px rgba(124,106,247,0.15);
   --shadow-lg:0 16px 48px rgba(0,0,0,0.5);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nanum Gothic',sans-serif;overscroll-behavior:none}
 
-.app-header{padding:24px 20px 20px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+/* HEADER */
+.app-header{padding:20px 20px 16px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
 .app-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,106,247,0.2) 0%,transparent 70%);pointer-events:none}
 .header-inner{display:flex;align-items:center;gap:12px;position:relative}
-.app-logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),#b06af7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(124,106,247,0.4);flex-shrink:0}
-.app-title{font-family:'Gmarket Sans',sans-serif;font-weight:700;font-size:17px;color:var(--text)}
-.app-subtitle{font-size:10px;color:var(--text3);margin-top:1px;letter-spacing:0.5px;text-transform:uppercase}
-.pwa-btn{margin-left:auto;background:rgba(124,106,247,0.15);border:1px solid rgba(124,106,247,0.3);color:var(--accent2);padding:6px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;display:none;white-space:nowrap;font-family:'Nanum Gothic',sans-serif}
+.app-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#b06af7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(124,106,247,0.4);flex-shrink:0}
+.app-title{font-family:'Gmarket Sans',sans-serif;font-weight:700;font-size:16px;color:var(--text)}
+.app-subtitle{font-size:9px;color:var(--text3);margin-top:1px;letter-spacing:0.5px;text-transform:uppercase}
+.pwa-btn{margin-left:auto;background:rgba(124,106,247,0.15);border:1px solid rgba(124,106,247,0.3);color:var(--accent2);padding:5px 9px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;display:none;white-space:nowrap;font-family:'Nanum Gothic',sans-serif}
 .pwa-btn.visible{display:block}
 
+/* TABS - 5개 */
 .tab-bar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.tab-item{flex:1;padding:12px 4px;text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;color:var(--text3);font-size:11px;font-weight:700}
+.tab-item{flex:1;padding:10px 2px;text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;color:var(--text3);font-size:10px;font-weight:700}
 .tab-item.active{color:var(--accent2);border-bottom-color:var(--accent)}
-.tab-icon{font-size:15px;display:block;margin-bottom:3px}
+.tab-icon{font-size:14px;display:block;margin-bottom:2px}
 
-.panel{display:none;padding:16px;padding-bottom:32px;animation:fadeUp 0.2s ease}
+/* PANELS */
+.panel{display:none;padding:14px;padding-bottom:32px;animation:fadeUp 0.2s ease}
 .panel.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.card-title{font-size:11px;font-weight:800;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.card-title{font-size:11px;font-weight:800;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .card-title::before{content:'';display:block;width:3px;height:12px;background:var(--accent);border-radius:2px}
 
-.char-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:10px 12px;font-size:13px;font-family:'Nanum Gothic',sans-serif;outline:none;resize:none;line-height:1.5;transition:border-color 0.2s}
-.char-input:focus{border-color:var(--accent)}
-.char-input::placeholder{color:var(--text3)}
-.char-hint{font-size:10px;color:var(--text3);margin-top:6px;line-height:1.6}
-
-.btn-primary{background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;white-space:nowrap;transition:background 0.15s,transform 0.1s}
-.btn-primary:active{background:var(--accent3);transform:scale(0.97)}
-
+/* UPLOAD */
 .upload-card{background:var(--bg2);border:1.5px dashed var(--border2);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;transition:border-color 0.2s}
 .upload-card.drag-over{border-color:var(--accent);background:rgba(124,106,247,0.05)}
 .upload-grid{display:grid;grid-template-columns:1fr 1fr}
-.upload-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 12px;cursor:pointer;background:transparent;border:none;color:var(--text);transition:background 0.15s;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-family:'Nanum Gothic',sans-serif}
+.upload-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 10px;cursor:pointer;background:transparent;border:none;color:var(--text);transition:background 0.15s;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-family:'Nanum Gothic',sans-serif}
 .upload-btn:nth-child(2){border-right:none}
 .upload-btn:nth-child(3){border-bottom:none;border-right:1px solid var(--border)}
 .upload-btn:nth-child(4){border-bottom:none;border-right:none}
 .upload-btn:active{background:rgba(124,106,247,0.08)}
-.upload-emoji{font-size:26px;margin-bottom:7px}
-.upload-label{font-size:12px;font-weight:800;color:var(--text)}
-.upload-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.upload-emoji{font-size:22px;margin-bottom:6px}
+.upload-label{font-size:11px;font-weight:800;color:var(--text)}
+.upload-sub{font-size:9px;color:var(--text3);margin-top:2px}
 #inputCamera,#inputGallery,#inputFile{display:none}
 
-.preview-wrap{border-top:1px solid var(--border);padding:14px;display:none}
+/* PREVIEW */
+.preview-wrap{border-top:1px solid var(--border);padding:12px;display:none}
 .preview-wrap.show{display:block}
 .preview-img-box{background:var(--bg3);border-radius:12px;overflow:hidden;text-align:center;padding:8px}
-.preview-img{max-width:100%;max-height:200px;object-fit:contain;border-radius:8px}
-.preview-meta{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
-.preview-name{font-size:11px;color:var(--text3)}
-.btn-clear{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:2px 6px}
-.btn-clear:active{color:var(--red)}
+.preview-img{max-width:100%;max-height:180px;object-fit:contain;border-radius:8px}
+.preview-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.preview-name{font-size:10px;color:var(--text3)}
+.btn-clear{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px}
 
-.btn-analyze{width:100%;margin-top:12px;padding:15px;background:linear-gradient(135deg,var(--accent),#b06af7);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;box-shadow:0 4px 20px rgba(124,106,247,0.4);transition:transform 0.1s,opacity 0.2s}
+/* MODE TOGGLE */
+.mode-toggle{display:flex;gap:6px;margin-bottom:12px}
+.mode-btn{flex:1;padding:9px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;transition:all 0.2s;text-align:center}
+.mode-btn.active{border-color:var(--accent);color:var(--accent2);background:rgba(124,106,247,0.1)}
+
+.btn-analyze{width:100%;margin-top:10px;padding:14px;background:linear-gradient(135deg,var(--accent),#b06af7);color:white;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;box-shadow:0 4px 20px rgba(124,106,247,0.4);transition:transform 0.1s,opacity 0.2s}
 .btn-analyze:active{transform:scale(0.98)}
 .btn-analyze:disabled{opacity:0.4;cursor:default;transform:none}
 
-.scores-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.score-box{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 6px;text-align:center;border:1px solid var(--border)}
-.score-num{font-family:'Gmarket Sans',sans-serif;font-size:26px;font-weight:700;color:var(--accent2);line-height:1}
+/* SCORES */
+.scores-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.score-box{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 4px;text-align:center;border:1px solid var(--border)}
+.score-num{font-family:'Gmarket Sans',sans-serif;font-size:24px;font-weight:700;color:var(--accent2);line-height:1}
 .score-num.high{color:var(--green)}.score-num.mid{color:var(--yellow)}.score-num.low{color:var(--red)}
-.score-lbl{font-size:10px;color:var(--text3);margin-top:4px}
-.score-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.score-lbl{font-size:9px;color:var(--text3);margin-top:3px}
+.score-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
 .score-bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 0.7s ease}
 
-.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.tag{background:rgba(124,106,247,0.12);border:1px solid rgba(124,106,247,0.25);color:var(--accent2);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+/* TAGS */
+.tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.tag{background:rgba(124,106,247,0.12);border:1px solid rgba(124,106,247,0.25);color:var(--accent2);padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
 .tag.green{background:rgba(79,217,122,0.1);border-color:rgba(79,217,122,0.25);color:var(--green)}
 .tag.red{background:rgba(255,107,107,0.1);border-color:rgba(255,107,107,0.25);color:var(--red)}
-.result-summary{font-size:14px;font-weight:800;color:var(--text);margin-bottom:10px;padding:12px 14px;background:rgba(124,106,247,0.08);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
-.result-text{font-size:13px;line-height:1.75;color:var(--text2);white-space:pre-line}
+.tag.star{background:rgba(255,209,102,0.1);border-color:rgba(255,209,102,0.3);color:var(--star)}
+.result-summary{font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px;padding:10px 12px;background:rgba(124,106,247,0.08);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.result-text{font-size:12px;line-height:1.75;color:var(--text2);white-space:pre-line}
 
-.loading-wrap{text-align:center;padding:40px 20px}
-.loader{width:40px;height:40px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 14px}
+/* FAVORITE BUTTON */
+.fav-btn{width:100%;margin-top:8px;padding:12px;background:transparent;border:1.5px solid var(--star);border-radius:var(--radius-sm);color:var(--star);font-size:13px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.fav-btn.saved{background:rgba(255,209,102,0.1);color:var(--star)}
+.fav-btn:active{transform:scale(0.98)}
+
+/* LOADING */
+.loading-wrap{text-align:center;padding:36px 20px}
+.loader{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-wrap p{font-size:12px;color:var(--text3)}
 
-.error-wrap{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2);border-radius:var(--radius-sm);padding:12px 14px;font-size:12px;color:var(--red);margin-bottom:12px}
+/* ERROR */
+.error-wrap{background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.2);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:var(--red);margin-bottom:10px}
 
-.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
-.hist-thumb{width:60px;height:60px;border-radius:10px;object-fit:cover;background:var(--bg3);flex-shrink:0;border:1px solid var(--border)}
+/* HISTORY ITEM */
+.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;transition:border-color 0.2s}
+.hist-item:active{border-color:var(--border2)}
+.hist-item.is-fav{border-color:rgba(255,209,102,0.3)}
+.hist-thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;background:var(--bg3);flex-shrink:0;border:1px solid var(--border)}
 .hist-body{flex:1;min-width:0}
-.hist-top{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.hist-date{font-size:10px;color:var(--text3)}
-.hist-char{font-size:10px;color:var(--accent2);background:rgba(124,106,247,0.1);padding:1px 7px;border-radius:10px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hist-scores{display:flex;gap:5px;flex-wrap:wrap}
-.hist-score{font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
-.hist-summary{font-size:11px;color:var(--text3);margin-top:5px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.hist-del{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:2px 4px;flex-shrink:0}
+.hist-top{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap}
+.hist-date{font-size:9px;color:var(--text3)}
+.hist-mode{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700}
+.hist-mode.ref{background:rgba(124,106,247,0.15);color:var(--accent2)}
+.hist-mode.mine{background:rgba(79,217,122,0.15);color:var(--green)}
+.hist-fav-badge{font-size:11px;color:var(--star)}
+.hist-scores{display:flex;gap:4px;flex-wrap:wrap}
+.hist-score{font-size:9px;font-weight:800;padding:1px 6px;border-radius:5px;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.hist-summary{font-size:10px;color:var(--text3);margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hist-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.hist-star-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:2px;line-height:1}
+.hist-del{background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;padding:2px}
 .hist-del:active{color:var(--red)}
+.hist-detail{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 
-.empty-state{text-align:center;padding:60px 20px}
-.empty-icon{font-size:52px;margin-bottom:14px;opacity:0.5}
-.empty-state p{font-size:13px;color:var(--text3);line-height:1.7}
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:6px;margin-bottom:12px}
+.filter-btn{flex:1;padding:7px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;transition:all 0.2s}
+.filter-btn.active{border-color:var(--accent);color:var(--accent2);background:rgba(124,106,247,0.1)}
 
-.report-hero{background:linear-gradient(135deg,#1a1830,#231f45);border:1px solid rgba(124,106,247,0.3);border-radius:var(--radius);padding:20px;margin-bottom:12px;position:relative;overflow:hidden}
-.report-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(124,106,247,0.3) 0%,transparent 70%)}
-.report-hero h2{font-family:'Gmarket Sans',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:50px 20px}
+.empty-icon{font-size:44px;margin-bottom:12px;opacity:0.5}
+.empty-state p{font-size:12px;color:var(--text3);line-height:1.7}
+
+/* TASTE ANALYSIS */
+.taste-hero{background:linear-gradient(135deg,#1a1428,#1f1a35);border:1px solid rgba(255,209,102,0.2);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.taste-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:radial-gradient(circle,rgba(255,209,102,0.15) 0%,transparent 70%)}
+.taste-hero h2{font-family:'Gmarket Sans',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
+.taste-hero p{font-size:11px;color:var(--text3);position:relative}
+.taste-count{display:inline-block;background:rgba(255,209,102,0.15);border:1px solid rgba(255,209,102,0.3);color:var(--star);padding:2px 10px;border-radius:10px;font-size:11px;font-weight:800;margin-top:6px}
+
+.fav-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.fav-thumb-box{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--bg3);border:1px solid var(--border);cursor:pointer}
+.fav-thumb-box img{width:100%;height:100%;object-fit:cover}
+.fav-thumb-box .fav-remove{position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);border:none;color:white;font-size:11px;border-radius:50%;width:20px;height:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fav-score-badge{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,0.7);color:var(--accent2);font-size:9px;font-weight:800;padding:1px 5px;border-radius:6px}
+
+.btn-taste{width:100%;padding:13px;background:linear-gradient(135deg,#b8860b,var(--star));color:#1a1000;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;margin-bottom:10px;transition:opacity 0.2s}
+.btn-taste:disabled{opacity:0.4;cursor:default}
+
+/* REPORT */
+.report-hero{background:linear-gradient(135deg,#1a1830,#231f45);border:1px solid rgba(124,106,247,0.3);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
+.report-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:radial-gradient(circle,rgba(124,106,247,0.3) 0%,transparent 70%)}
+.report-hero h2{font-family:'Gmarket Sans',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
 .report-hero p{font-size:11px;color:var(--text3);position:relative}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;text-align:center}
-.stat-num{font-family:'Gmarket Sans',sans-serif;font-size:26px;font-weight:700;color:var(--accent2)}
-.stat-lbl{font-size:10px;color:var(--text3);margin-top:3px}
-.btn-report{width:100%;padding:14px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;margin-bottom:12px;transition:border-color 0.2s,background 0.2s}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 6px;text-align:center}
+.stat-num{font-family:'Gmarket Sans',sans-serif;font-size:24px;font-weight:700;color:var(--accent2)}
+.stat-lbl{font-size:9px;color:var(--text3);margin-top:3px}
+.btn-report{width:100%;padding:13px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;margin-bottom:10px;transition:border-color 0.2s,background 0.2s}
 .btn-report:active{background:rgba(124,106,247,0.1);border-color:var(--accent)}
 
-.settings-info{font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px}
-.settings-info a{color:var(--accent2);text-decoration:none}
+/* SETTINGS */
+.char-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);padding:10px 12px;font-size:12px;font-family:'Nanum Gothic',sans-serif;outline:none;resize:none;line-height:1.5;transition:border-color 0.2s}
+.char-input:focus{border-color:var(--accent)}
+.char-input::placeholder{color:var(--text3)}
+.char-hint{font-size:10px;color:var(--text3);margin-top:5px;line-height:1.6}
+.btn-primary{background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);padding:9px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;transition:background 0.15s,transform 0.1s}
+.btn-primary:active{background:var(--accent3);transform:scale(0.97)}
+.settings-info{font-size:11px;color:var(--text3);line-height:1.7;margin-top:6px}
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:20px;font-size:12px;opacity:0;transition:all 0.25s;z-index:9999;white-space:nowrap;pointer-events:none;box-shadow:var(--shadow-lg)}
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:9px 16px;border-radius:20px;font-size:12px;opacity:0;transition:all 0.25s;z-index:9999;white-space:nowrap;pointer-events:none;box-shadow:var(--shadow-lg)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-.install-banner{display:none;background:linear-gradient(135deg,rgba(124,106,247,0.15),rgba(176,106,247,0.1));border:1px solid rgba(124,106,247,0.3);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;align-items:center;gap:10px}
+.install-banner{display:none;background:linear-gradient(135deg,rgba(124,106,247,0.15),rgba(176,106,247,0.1));border:1px solid rgba(124,106,247,0.3);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;align-items:center;gap:8px}
 .install-banner.show{display:flex}
-.install-text{flex:1;font-size:12px;color:var(--text2);line-height:1.5}
-.install-text strong{color:var(--accent2);display:block;margin-bottom:2px}
-.btn-install{background:var(--accent);color:white;border:none;border-radius:8px;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;white-space:nowrap;flex-shrink:0}
+.install-text{flex:1;font-size:11px;color:var(--text2);line-height:1.5}
+.install-text strong{color:var(--accent2);display:block;margin-bottom:1px}
+.btn-install{background:var(--accent);color:white;border:none;border-radius:8px;padding:7px 11px;font-size:10px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;white-space:nowrap;flex-shrink:0}
 </style>
 </head>
 <body>
 
-<script>
-const API_URL = '/api/claude';
-</script>
+<script>const API_URL='/api/claude';</script>
 
 <header class="app-header">
   <div class="header-inner">
@@ -162,15 +211,22 @@ const API_URL = '/api/claude';
 <nav class="tab-bar">
   <div class="tab-item active" onclick="switchTab('analyze')"><span class="tab-icon">🔍</span>분석</div>
   <div class="tab-item" onclick="switchTab('history')"><span class="tab-icon">📋</span>기록</div>
-  <div class="tab-item" onclick="switchTab('report')"><span class="tab-icon">📊</span>리포트</div>
+  <div class="tab-item" onclick="switchTab('favorites')"><span class="tab-icon">⭐</span>즐겨찾기</div>
+  <div class="tab-item" onclick="switchTab('taste')"><span class="tab-icon">🎯</span>취향분석</div>
   <div class="tab-item" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>설정</div>
 </nav>
 
-<!-- 분석 -->
+<!-- ══ 분석 탭 ══ -->
 <div id="tab-analyze" class="panel active">
   <div class="install-banner" id="installBanner">
     <div class="install-text"><strong>📱 홈화면에 추가하기</strong>앱처럼 빠르게 사용할 수 있어요</div>
     <button class="btn-install" onclick="installPWA()">설치</button>
+  </div>
+
+  <!-- 분석 모드 선택 -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="modeRef" onclick="setMode('ref')">🔍 레퍼런스 분석<br><span style="font-size:9px;font-weight:400;color:var(--text3)">승인된 이모티콘 트렌드 파악</span></button>
+    <button class="mode-btn" id="modeMine" onclick="setMode('mine')">🎨 내 작품 평가<br><span style="font-size:9px;font-weight:400;color:var(--text3)">내가 만든 이모티콘 심사</span></button>
   </div>
 
   <div class="upload-card" id="uploadCard">
@@ -204,41 +260,69 @@ const API_URL = '/api/claude';
   <div id="resultBox"></div>
 </div>
 
-<!-- 기록 -->
-<div id="tab-history" class="panel"><div id="historyList"></div></div>
-
-<!-- 리포트 -->
-<div id="tab-report" class="panel">
-  <div class="report-hero">
-    <h2>📊 월간 분석 리포트</h2>
-    <p id="reportMonth"></p>
+<!-- ══ 기록 탭 ══ -->
+<div id="tab-history" class="panel">
+  <div class="filter-tabs">
+    <button class="filter-btn active" id="filterAll" onclick="setHistFilter('all')">전체</button>
+    <button class="filter-btn" id="filterRef" onclick="setHistFilter('ref')">🔍 레퍼런스</button>
+    <button class="filter-btn" id="filterMine" onclick="setHistFilter('mine')">🎨 내 작품</button>
   </div>
-  <div class="stats-grid" id="reportStats"></div>
-  <button class="btn-report" onclick="generateReport()">🤖 AI 전략 리포트 생성하기</button>
-  <div id="reportContent"></div>
+  <div id="historyList"></div>
 </div>
 
-<!-- 설정 -->
+<!-- ══ 즐겨찾기 탭 ══ -->
+<div id="tab-favorites" class="panel">
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:13px;font-weight:800;color:var(--text)">⭐ 즐겨찾기 컬렉션</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:3px">마음에 든 이모티콘을 모아두세요</div>
+      </div>
+      <div id="favCount" style="font-family:'Gmarket Sans',sans-serif;font-size:22px;font-weight:700;color:var(--star)">0</div>
+    </div>
+  </div>
+  <div id="favGrid" class="fav-grid"></div>
+  <div id="favEmpty" class="empty-state" style="display:none">
+    <div class="empty-icon">⭐</div>
+    <p>아직 즐겨찾기가 없어요.<br>분석 후 ⭐ 버튼을 눌러 저장해보세요!</p>
+  </div>
+</div>
+
+<!-- ══ 취향분석 탭 ══ -->
+<div id="tab-taste" class="panel">
+  <div class="taste-hero">
+    <h2>🎯 내 취향 분석</h2>
+    <p>즐겨찾기한 이모티콘을 AI가 분석해서<br>내 취향 패턴과 기획 방향을 알려줘요</p>
+    <div class="taste-count" id="tasteCount">즐겨찾기 0개</div>
+  </div>
+  <button class="btn-taste" id="btnTaste" onclick="runTasteAnalysis()" disabled>
+    ✨ 내 취향 분석하기
+  </button>
+  <div id="tasteResult"></div>
+</div>
+
+<!-- ══ 설정 탭 ══ -->
 <div id="tab-settings" class="panel">
   <div class="card">
     <div class="card-title">내 캐릭터 설정</div>
-    <textarea class="char-input" id="charDesc" rows="4"
-      placeholder="예) 흰 고양이, 분홍 꽃무늬 파자마, 직장인 일상 테마, 손그림 감성"></textarea>
-    <div class="char-hint">캐릭터 정보를 입력하면 분석 결과가 내 캐릭터에 맞게 커스터마이즈돼요.<br>비워두면 범용 카카오 이모티콘 분석을 진행해요.</div>
-    <button class="btn-primary" style="margin-top:10px;width:100%" onclick="saveCharDesc()">캐릭터 저장</button>
+    <textarea class="char-input" id="charDesc" rows="3" placeholder="예) 흰 고양이, 분홍 꽃무늬 파자마, 직장인 일상 테마, 손그림 감성"></textarea>
+    <div class="char-hint">캐릭터 정보를 입력하면 분석이 내 캐릭터에 맞게 커스터마이즈돼요.</div>
+    <button class="btn-primary" style="margin-top:8px;width:100%" onclick="saveCharDesc()">저장</button>
   </div>
   <div class="card">
     <div class="card-title">데이터 관리</div>
-    <div class="settings-info" style="margin-bottom:10px">분석 기록: <strong id="histCount" style="color:var(--accent2)">0</strong>개 저장됨</div>
-    <button onclick="clearAllHistory()" style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);color:var(--red);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;width:100%;font-family:'Nanum Gothic',sans-serif;">🗑️ 모든 기록 삭제</button>
+    <div class="settings-info" style="margin-bottom:8px">
+      분석 기록: <strong id="histCount" style="color:var(--accent2)">0</strong>개 &nbsp;|&nbsp;
+      즐겨찾기: <strong id="favCountSettings" style="color:var(--star)">0</strong>개
+    </div>
+    <button onclick="clearAllData()" style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);color:var(--red);border-radius:var(--radius-sm);padding:9px 12px;font-size:11px;font-weight:700;cursor:pointer;width:100%;font-family:'Nanum Gothic',sans-serif;">🗑️ 모든 기록 삭제</button>
   </div>
   <div class="card">
     <div class="card-title">앱 정보</div>
     <div class="settings-info">
-      <strong style="color:var(--text2)">이모티콘 파이프라인</strong> v1.0<br>
-      카카오 이모티콘 트렌드 분석 & 제작 전략 도구<br><br>
-      분석 모델: Claude Sonnet (Anthropic)<br>
-      데이터 저장: 기기 로컬 (localStorage)
+      <strong style="color:var(--text2)">이모티콘 파이프라인</strong> v2.0<br>
+      카카오 이모티콘 분석 & 취향 기반 기획 도구<br><br>
+      분석 모델: Claude Sonnet · 데이터: 기기 로컬 저장
     </div>
   </div>
 </div>
@@ -246,18 +330,28 @@ const API_URL = '/api/claude';
 <div class="toast" id="toast"></div>
 
 <script>
-let currentBase64=null,currentMime=null,currentName='',deferredPrompt=null;
+// ════════════════════════════
+// STATE
+// ════════════════════════════
+let currentBase64=null,currentMime=null,currentName='',currentMode='ref',histFilter='all',deferredPrompt=null;
+let lastResult=null,lastThumb=null;
+
 const DB={
   getHistory:()=>{try{return JSON.parse(localStorage.getItem('ep_history')||'[]')}catch{return[]}},
   saveHistory:h=>localStorage.setItem('ep_history',JSON.stringify(h)),
+  getFavs:()=>{try{return JSON.parse(localStorage.getItem('ep_favs')||'[]')}catch{return[]}},
+  saveFavs:f=>localStorage.setItem('ep_favs',JSON.stringify(f)),
   getChar:()=>localStorage.getItem('ep_char_desc')||'',
   setChar:c=>localStorage.setItem('ep_char_desc',c),
 };
 
+// ════════════════════════════
+// INIT
+// ════════════════════════════
 window.addEventListener('DOMContentLoaded',()=>{
   const char=DB.getChar();
   if(char)document.getElementById('charDesc').value=char;
-  updateHistCount();renderReport();
+  updateCounts();renderReport&&renderReport();
   const uc=document.getElementById('uploadCard');
   uc.addEventListener('dragover',e=>{e.preventDefault();uc.classList.add('drag-over')});
   uc.addEventListener('dragleave',()=>uc.classList.remove('drag-over'));
@@ -273,36 +367,59 @@ window.addEventListener('beforeinstallprompt',e=>{
   document.getElementById('pwaBtn').classList.add('visible');
   document.getElementById('installBanner').classList.add('show');
 });
-window.addEventListener('appinstalled',()=>{
-  document.getElementById('pwaBtn').classList.remove('visible');
-  document.getElementById('installBanner').classList.remove('show');
-  showToast('홈화면에 추가됐어요! 🎉');
-});
 function installPWA(){
   if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null}
   else showToast('브라우저 주소창 옆 설치 아이콘을 눌러보세요');
 }
 
-function saveCharDesc(){const c=document.getElementById('charDesc').value.trim();DB.setChar(c);showToast(c?'캐릭터 설정 저장 완료 ✓':'범용 모드로 설정됐어요')}
-function updateHistCount(){const el=document.getElementById('histCount');if(el)el.textContent=DB.getHistory().length}
-function clearAllHistory(){if(!confirm('모든 분석 기록을 삭제할까요?'))return;localStorage.removeItem('ep_history');updateHistCount();renderReport();showToast('기록을 모두 삭제했어요')}
+// ════════════════════════════
+// MODE
+// ════════════════════════════
+function setMode(mode){
+  currentMode=mode;
+  document.getElementById('modeRef').classList.toggle('active',mode==='ref');
+  document.getElementById('modeMine').classList.toggle('active',mode==='mine');
+}
 
+// ════════════════════════════
+// 설정
+// ════════════════════════════
+function saveCharDesc(){const c=document.getElementById('charDesc').value.trim();DB.setChar(c);showToast(c?'캐릭터 설정 저장 완료 ✓':'범용 모드로 설정됐어요')}
+function updateCounts(){
+  const h=DB.getHistory(),f=DB.getFavs();
+  const hEl=document.getElementById('histCount');if(hEl)hEl.textContent=h.length;
+  const fEl=document.getElementById('favCountSettings');if(fEl)fEl.textContent=f.length;
+  const fcEl=document.getElementById('favCount');if(fcEl)fcEl.textContent=f.length;
+  const tcEl=document.getElementById('tasteCount');if(tcEl)tcEl.textContent=`즐겨찾기 ${f.length}개`;
+  const btnT=document.getElementById('btnTaste');if(btnT)btnT.disabled=f.length<3;
+}
+function clearAllData(){
+  if(!confirm('모든 기록과 즐겨찾기를 삭제할까요?'))return;
+  localStorage.removeItem('ep_history');localStorage.removeItem('ep_favs');
+  updateCounts();showToast('모두 삭제했어요');
+}
+
+// ════════════════════════════
+// 이미지
+// ════════════════════════════
 function handleFile(file){
   if(!file||!file.type.startsWith('image/')){showToast('이미지 파일만 가능해요');return}
   currentName=file.name||'이미지';currentMime=file.type;
   const reader=new FileReader();
   reader.onload=e=>{
     currentBase64=e.target.result.split(',')[1];
+    lastThumb=e.target.result;
     document.getElementById('previewImg').src=e.target.result;
     document.getElementById('previewName').textContent=currentName;
     document.getElementById('previewWrap').classList.add('show');
     document.getElementById('resultBox').innerHTML='';
     document.getElementById('errorBox').innerHTML='';
+    lastResult=null;
   };
   reader.readAsDataURL(file);
 }
 function clearImage(){
-  currentBase64=null;currentMime=null;currentName='';
+  currentBase64=null;currentMime=null;currentName='';lastResult=null;lastThumb=null;
   document.getElementById('previewWrap').classList.remove('show');
   document.getElementById('previewImg').src='';
   document.getElementById('resultBox').innerHTML='';
@@ -317,216 +434,433 @@ async function pasteFromClipboard(){
   }catch{showToast('Ctrl+V 로 붙여넣기 해보세요 💡')}
 }
 
+// ════════════════════════════
+// 분석 (2단계)
+// ════════════════════════════
 async function runAnalysis(){
   if(!currentBase64){showError('이미지를 먼저 선택해주세요!');return}
   document.getElementById('btnAnalyze').disabled=true;
   document.getElementById('errorBox').innerHTML='';
   document.getElementById('resultBox').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>1단계: 이모티콘 관찰 중...</p></div>';
   const charDesc=DB.getChar();
-  const charContext=charDesc?`분석 결과는 다음 캐릭터 제작에 활용됩니다: "${charDesc}"`:'범용 카카오 이모티콘 분석을 진행합니다.';
+  const charContext=charDesc?`참고할 내 캐릭터 설정: "${charDesc}"`:'(캐릭터 미설정 — 범용 분석)';
+  const isMine=currentMode==='mine';
+
   try{
-    // ── 1단계: 이미지 상세 관찰 ──
+    // 1단계: 관찰
     const step1=await fetch(API_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:800,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
-          {type:'text',text:`이 카카오 이모티콘 이미지를 보고 아래 항목을 사실 그대로 묘사하세요. 평가나 판단 없이 보이는 것만 기록하세요.
-
-1. 그림체: 선의 느낌(손그림/디지털클린/수채화 등), 선 굵기, 불규칙성
-2. 색상: 사용된 색상 수, 주요 색상, 배경 유무
-3. 캐릭터: 어떤 캐릭터인지, 특징적인 요소, 표정 종류와 개수
-4. 텍스트: 포함된 문구들을 모두 나열
-5. 상황: 각 컷에서 어떤 상황/감정을 표현하는지
-6. 전체 컷 수와 구성`}
+          {type:'text',text:`이 카카오 이모티콘 이미지를 보고 아래 항목을 사실 그대로만 묘사하세요. 평가나 판단 없이 보이는 것만 기록하세요.
+1. 그림체: 선의 느낌(손그림/디지털클린/수채화), 선 굵기, 불규칙성 여부
+2. 색상: 사용 색상 수, 주요 색상명, 배경 유무
+3. 캐릭터: 어떤 캐릭터인지, 특징적 요소, 표정 종류와 개수(세어서)
+4. 텍스트: 포함된 문구 모두 나열
+5. 상황: 각 컷의 감정/상황
+6. 전체 컷 수`}
         ]}]
       })
     });
-    if(!step1.ok) throw new Error('1단계 실패');
-    const step1data=await step1.json();
-    const observation=step1data.content[0].text;
+    if(!step1.ok)throw new Error('관찰 실패');
+    const obs=( await step1.json()).content[0].text;
 
     document.getElementById('resultBox').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>2단계: 심사 기준으로 채점 중...</p></div>';
 
-    // ── 2단계: 관찰 결과 기반 채점 ──
+    // 2단계: 채점
+    const mineExtra = isMine ? `
+이것은 직접 제작한 이모티콘입니다. 카카오 심사 통과 가능성을 엄격하게 평가하고, 승인을 위해 반드시 수정해야 할 점을 구체적으로 알려주세요.` : '';
+
     const res=await fetch(API_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:1000,
-        system:`당신은 카카오 이모티콘 심사 전문가입니다. 아래 세부 기준으로 냉정하게 분석하세요.
+        model:'claude-sonnet-4-20250514',max_tokens:1200,
+        system:`당신은 카카오 이모티콘 심사 전문가입니다. 제공된 관찰 결과만을 근거로 채점하세요. 관찰에 없는 내용은 없다고 판단합니다.
 
-━━ trend_fit (트렌드 적합성) 채점 기준 ━━
-다음 5가지를 각각 확인하고 충족 개수로 점수를 산정하세요:
-① 손그림/수채화/불규칙한 선 느낌 (디지털 깔끔체 아님)
-② 배경 없음 또는 매우 단순한 배경
-③ 공감 텍스트 포함 (직장인/일상/감정 표현 문구)
-④ 1~2가지 제한된 색상 팔레트
-⑤ 현재 유행하는 주제 (번아웃/귀찮음/소확행/직장생활 등)
-→ 5개 충족=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
+━━ trend_fit 채점 ━━
+관찰 결과에서 실제 확인된 항목만 ✓:
+① 손그림/수채화/불규칙한 선 (디지털 클린선 아님)
+② 배경 없음 또는 단색 단순 배경
+③ 직장인/일상/감정 공감 텍스트 문구 존재
+④ 2가지 이하 제한 색상
+⑤ 번아웃/귀찮음/직장생활/소확행 등 현재 유행 주제
 
-━━ character_appeal (캐릭터 매력도) 채점 기준 ━━
-다음 5가지를 각각 확인하세요:
-① 캐릭터 실루엣이 한눈에 구별되는 독창적 형태
-② 모든 컷에서 캐릭터 형태/색상/스타일 일관성 유지
-③ 표정이 최소 5가지 이상 다양하게 표현됨
-④ 캐릭터만의 시그니처 요소 존재 (특정 아이템/포즈/말투)
-⑤ 작은 크기(카톡 썸네일)에서도 표정이 잘 읽힘
-→ 5개=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
+━━ character_appeal 채점 ━━
+① 다른 캐릭터와 구별되는 독창적 실루엣
+② 전체 컷에서 캐릭터 일관성 유지
+③ 관찰된 표정 종류 5가지 이상
+④ 캐릭터 고유 아이템/포즈/특징 존재
+⑤ 작은 크기에서도 표정 식별 가능한 단순한 형태
 
-━━ usability (실사용성) 채점 기준 ━━
-다음 5가지를 각각 확인하세요:
-① 일상 대화에서 하루 1회 이상 쓸 수 있는 상황의 이모티콘이 절반 이상
-② 텍스트 없이 이미지만으로도 감정 전달 가능
-③ 연령/성별 무관하게 공감 가능한 보편적 상황 포함
-④ 단순 반응형(ㅋㅋ/ㅠㅠ 대체) 이모티콘이 충분히 포함
-⑤ 특정 상황(사과/감사/거절/동의 등) 커버 다양성
-→ 5개=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
+━━ usability 채점 ━━
+먼저 타겟 파악: 가족/직장인/연인/일반
+타겟 맥락 기준으로:
+① 해당 타겟 대화에서 자주 쓸 수 있는 상황이 절반 이상
+② 텍스트 없이도 감정 전달 가능한 컷 존재
+③ 타겟 내 다양한 감정 커버 (4가지 이상)
+④ 범용 기본 반응 컷 포함 (ㅋㅋ/ㅠㅠ/동의/거절 대체)
+⑤ 보내는 사람/받는 사람 양쪽 공감 상황 포함
 
-━━ 점수 규칙 (반드시 준수) ━━
-- 세 점수는 반드시 서로 달라야 합니다. 동일 점수 절대 금지.
-- 위 체크리스트 결과를 그대로 반영. 전체 인상으로 통일 금지.
-- trend_fit_detail, character_appeal_detail, usability_detail에 충족한 항목 번호를 배열로 기록.
+━━ 채점 규칙 ━━
+충족 5개=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
+세 점수는 반드시 서로 달라야 함. 동일 점수 절대 금지.
 
-반드시 아래 JSON 형식으로만 응답. 마크다운 없이 순수 JSON만 출력.
-{"trend_fit":숫자,"trend_fit_detail":[충족항목번호들],"character_appeal":숫자,"character_appeal_detail":[충족항목번호들],"usability":숫자,"usability_detail":[충족항목번호들],"summary":"한 줄 핵심 요약 (25자 이내)","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2"],"strategy_tips":"내 캐릭터 제작에 적용할 구체적 전략 (2-3문장)","approval_chance":"높음|보통|낮음"}`,
+반드시 JSON만 출력:
+{"trend_fit":숫자,"trend_fit_detail":[번호배열],"character_appeal":숫자,"character_appeal_detail":[번호배열],"usability":숫자,"usability_detail":[번호배열],"target":"타겟대상","summary":"25자이내요약","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2","개선점3"],"strategy_tips":"전략메모(3문장)","approval_chance":"높음|보통|낮음"}`,
         messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
-          {type:'text',text:`이 카카오 이모티콘 이미지를 전문적으로 분석해주세요.\n\n${charContext}\n\n트렌드 적합성, 캐릭터 매력도, 실사용성을 평가하고 카카오 심사 통과 가능성과 제작 전략을 알려주세요.`}
+          {type:'text',text:`관찰 결과:\n${obs}\n\n${charContext}${mineExtra}\n\n위 관찰 결과만 근거로 채점해주세요. strategy_tips에는 타겟을 먼저 밝히고 내 캐릭터 제작에 적용할 전략을 작성해주세요.`}
         ]}]
       })
     });
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`서버 오류 (${res.status})`)}
     const data=await res.json();
     const parsed=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
-    renderResult(parsed);persistHistory(parsed);updateHistCount();
+    lastResult=parsed;
+    renderResult(parsed,isMine);
+    persistHistory(parsed);
+    updateCounts();
   }catch(err){
     document.getElementById('resultBox').innerHTML='';
     showError('분석 실패: '+err.message);
   }finally{document.getElementById('btnAnalyze').disabled=false}
 }
 
-function scoreColor(v){return v>=8?'high':v>=5?'mid':'low'}
-function renderResult(r){
+function scoreColor(v){return v>=7?'high':v>=4?'mid':'low'}
+
+function renderResult(r,isMine){
   const cc=r.approval_chance==='높음'?'green':r.approval_chance==='낮음'?'red':'';
-  const trendItems=['손그림/수채화 선 느낌','배경 없음/단순','공감 텍스트 포함','제한된 색상 팔레트','유행 주제 반영'];
-  const appealItems=['독창적 실루엣','캐릭터 일관성','표정 5가지 이상','시그니처 요소','작은 크기 가독성'];
-  const usageItems=['타겟 상황 빈도 높음','맥락 내 비언어 전달','타겟 내 감정 다양성','범용 기본 반응 포함','양방향 공감 가능'];
-  function checkList(items, detail){
+  const trendItems=['손그림/수채화 선','배경 없음/단순','공감 텍스트 포함','2색 이하 팔레트','유행 주제 반영'];
+  const appealItems=['독창적 실루엣','캐릭터 일관성','표정 5종 이상','시그니처 요소','작은 크기 가독성'];
+  const usageItems=['타겟 상황 빈도 높음','비언어 감정 전달','타겟 내 감정 다양','범용 반응 컷 포함','양방향 공감 가능'];
+
+  function checkList(items,detail){
     const ok=detail||[];
-    return items.map((item,i)=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
-      <span style="color:${ok.includes(i+1)?'var(--green)':'var(--red)'};font-size:13px">${ok.includes(i+1)?'✓':'✗'}</span>
-      <span style="color:${ok.includes(i+1)?'var(--text)':'var(--text3)'}">${item}</span>
-    </div>`).join('');
+    return items.map((item,i)=>`
+      <div style="display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <span style="color:${ok.includes(i+1)?'var(--green)':'var(--red)'};font-size:13px;flex-shrink:0">${ok.includes(i+1)?'✓':'✗'}</span>
+        <span style="color:${ok.includes(i+1)?'var(--text)':'var(--text3)'}">${item}</span>
+      </div>`).join('');
   }
+
+  const mineWarning=isMine?`
+    <div style="background:rgba(79,217,122,0.08);border:1px solid rgba(79,217,122,0.2);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:10px;font-size:11px;color:var(--green)">
+      🎨 <strong>내 작품 평가 모드</strong> — 카카오 심사 기준으로 엄격하게 평가한 결과예요
+    </div>`:'';
+
   document.getElementById('resultBox').innerHTML=`
-    <div class="card"><div class="card-title">분석 점수</div>
-      <div class="scores-row">${['트렌드','매력도','사용성'].map((l,i)=>scoreBox(l,[r.trend_fit,r.character_appeal,r.usability][i])).join('')}</div>
+    ${mineWarning}
+    <div class="card">
+      <div class="card-title">분석 점수</div>
+      <div class="scores-row">
+        ${scoreBox('트렌드',r.trend_fit)}
+        ${scoreBox('매력도',r.character_appeal)}
+        ${scoreBox('사용성',r.usability)}
+      </div>
       <div class="result-summary">${r.summary}</div>
-      <div class="tag-list"><span class="tag ${cc}">심사 통과 ${r.approval_chance}</span></div>
+      <div class="tag-list">
+        <span class="tag ${cc}">심사 통과 ${r.approval_chance}</span>
+        ${r.target?`<span class="tag">🎯 ${r.target} 타겟</span>`:''}
+      </div>
     </div>
     <div class="card">
       <div class="card-title">트렌드 체크리스트</div>
-      ${checkList(trendItems, r.trend_fit_detail)}
+      ${checkList(trendItems,r.trend_fit_detail)}
     </div>
     <div class="card">
       <div class="card-title">캐릭터 매력 체크리스트</div>
-      ${checkList(appealItems, r.character_appeal_detail)}
+      ${checkList(appealItems,r.character_appeal_detail)}
     </div>
     <div class="card">
       <div class="card-title">사용성 체크리스트</div>
-      ${checkList(usageItems, r.usability_detail)}
+      ${checkList(usageItems,r.usability_detail)}
     </div>
-    <div class="card"><div class="card-title">강점</div>
+    <div class="card">
+      <div class="card-title">강점</div>
       <div class="tag-list">${(r.strengths||[]).map(s=>`<span class="tag green">✓ ${s}</span>`).join('')}</div>
     </div>
-    <div class="card"><div class="card-title">개선 포인트</div>
+    <div class="card">
+      <div class="card-title">개선 포인트</div>
       <div class="tag-list">${(r.improvements||[]).map(i=>`<span class="tag red">△ ${i}</span>`).join('')}</div>
     </div>
-    <div class="card"><div class="card-title">제작 전략 메모</div>
+    <div class="card">
+      <div class="card-title">제작 전략 메모</div>
       <div class="result-text">${r.strategy_tips}</div>
-    </div>`;
+    </div>
+    <button class="fav-btn" id="favBtn" onclick="toggleFavFromResult()">
+      ⭐ 즐겨찾기에 저장하기
+    </button>`;
+
+  // 이미 즐겨찾기인지 확인
+  updateFavBtn();
 }
+
 function scoreBox(label,val){
   return`<div class="score-box"><div class="score-num ${scoreColor(val)}">${val}</div><div class="score-lbl">${label}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${val*10}%"></div></div></div>`;
 }
+
 function persistHistory(r){
   const h=DB.getHistory();
-  h.unshift({id:Date.now(),date:new Date().toLocaleDateString('ko-KR'),thumb:document.getElementById('previewImg').src,char:DB.getChar().slice(0,30)||'범용',trend:r.trend_fit,appeal:r.character_appeal,usability:r.usability,summary:r.summary,tips:r.strategy_tips,chance:r.approval_chance,strengths:r.strengths||[],improvements:r.improvements||[]});
-  if(h.length>200)h.pop();DB.saveHistory(h);
+  h.unshift({
+    id:Date.now(),
+    date:new Date().toLocaleDateString('ko-KR'),
+    thumb:lastThumb,
+    mode:currentMode,
+    char:DB.getChar().slice(0,30)||'범용',
+    trend:r.trend_fit,appeal:r.character_appeal,usability:r.usability,
+    summary:r.summary,tips:r.strategy_tips,chance:r.approval_chance,
+    target:r.target||'',
+    strengths:r.strengths||[],improvements:r.improvements||[],
+    trend_detail:r.trend_fit_detail||[],
+    appeal_detail:r.character_appeal_detail||[],
+    usage_detail:r.usability_detail||[]
+  });
+  if(h.length>200)h.pop();
+  DB.saveHistory(h);
 }
 
-function renderHistory(){
-  const h=DB.getHistory(),el=document.getElementById('historyList');
-  if(!h.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>아직 분석 기록이 없어요.<br>이모티콘을 분석하면 여기에 쌓여요!</p></div>';return}
-  const ct=c=>c==='높음'?'#4fd97a':c==='낮음'?'#ff6b6b':'#ffd166';
-  el.innerHTML=h.map(i=>`<div class="hist-item" onclick="toggleDetail(${i.id})" style="cursor:pointer">
-    <img class="hist-thumb" src="${i.thumb}" alt="">
-    <div class="hist-body">
-      <div class="hist-top"><span class="hist-date">${i.date}</span>${i.char?`<span class="hist-char">${i.char}</span>`:''}</div>
-      <div class="hist-scores">
-        <span class="hist-score">트렌드 ${i.trend}</span>
-        <span class="hist-score">매력 ${i.appeal}</span>
-        <span class="hist-score">사용성 ${i.usability}</span>
-        ${i.chance?`<span class="hist-score" style="color:${ct(i.chance)}">심사 ${i.chance}</span>`:''}
-      </div>
-      <div class="hist-summary">${i.summary||''}</div>
-      <div id="detail-${i.id}" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-        ${(i.strengths&&i.strengths.length)?'<div style="margin-bottom:8px"><div style="font-size:10px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">✅ 강점</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+i.strengths.map(s=>'<span style="background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.25);color:#4fd97a;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700">'+s+'</span>').join('')+'</div></div>':''} 
-        ${(i.improvements&&i.improvements.length)?'<div style="margin-bottom:8px"><div style="font-size:10px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">🔧 개선 포인트</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+i.improvements.map(s=>'<span style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.25);color:#ff6b6b;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:700">'+s+'</span>').join('')+'</div></div>':''} 
-        ${i.tips?'<div><div style="font-size:10px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">💡 전략 메모</div><div style="font-size:11px;color:var(--text2);line-height:1.6">'+i.tips+'</div></div>':''} 
-      </div>
-    </div>
-    <button class="hist-del" onclick="event.stopPropagation();deleteItem(${i.id})">✕</button>
-  </div>`).join('');
+// ════════════════════════════
+// 즐겨찾기
+// ════════════════════════════
+function toggleFavFromResult(){
+  if(!lastResult||!lastThumb)return;
+  const favs=DB.getFavs();
+  const existIdx=favs.findIndex(f=>f.thumb===lastThumb);
+  if(existIdx>=0){
+    favs.splice(existIdx,1);
+    DB.saveFavs(favs);
+    showToast('즐겨찾기에서 제거했어요');
+  } else {
+    favs.unshift({
+      id:Date.now(),
+      thumb:lastThumb,
+      mode:currentMode,
+      trend:lastResult.trend_fit,appeal:lastResult.character_appeal,usability:lastResult.usability,
+      summary:lastResult.summary,tips:lastResult.strategy_tips,
+      target:lastResult.target||'',
+      strengths:lastResult.strengths||[],improvements:lastResult.improvements||[],
+      trend_detail:lastResult.trend_fit_detail||[],
+      appeal_detail:lastResult.character_appeal_detail||[],
+      usage_detail:lastResult.usability_detail||[]
+    });
+    DB.saveFavs(favs);
+    showToast('⭐ 즐겨찾기에 저장했어요!');
+  }
+  updateFavBtn();
+  updateCounts();
 }
-function toggleDetail(id){
-  const el=document.getElementById('detail-'+id);
-  if(el)el.style.display=el.style.display==='none'?'block':'none';
-}
-function deleteItem(id){DB.saveHistory(DB.getHistory().filter(i=>i.id!==id));renderHistory();renderReport();updateHistCount();showToast('삭제했어요')}
 
-function renderReport(){
-  const h=DB.getHistory(),now=new Date();
-  document.getElementById('reportMonth').textContent=`${now.getFullYear()}년 ${now.getMonth()+1}월 분석 현황`;
-  const thisM=h.filter(i=>{const d=new Date(i.id);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()});
-  const avg=arr=>arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):'-';
-  document.getElementById('reportStats').innerHTML=`
-    <div class="stat-box"><div class="stat-num">${thisM.length}</div><div class="stat-lbl">이번달 분석</div></div>
-    <div class="stat-box"><div class="stat-num">${avg(thisM.map(i=>i.trend))}</div><div class="stat-lbl">평균 트렌드</div></div>
-    <div class="stat-box"><div class="stat-num">${avg(thisM.map(i=>i.appeal))}</div><div class="stat-lbl">평균 매력도</div></div>`;
+function updateFavBtn(){
+  const btn=document.getElementById('favBtn');
+  if(!btn||!lastThumb)return;
+  const favs=DB.getFavs();
+  const isSaved=favs.some(f=>f.thumb===lastThumb);
+  btn.textContent=isSaved?'⭐ 즐겨찾기에서 제거':'⭐ 즐겨찾기에 저장하기';
+  btn.classList.toggle('saved',isSaved);
 }
-async function generateReport(){
+
+function toggleHistFav(id,e){
+  e.stopPropagation();
   const h=DB.getHistory();
-  if(!h.length){document.getElementById('reportContent').innerHTML='<div class="error-wrap">분석 기록이 없어요!</div>';return}
-  document.getElementById('reportContent').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>AI 전략 리포트 생성 중...</p></div>';
+  const item=h.find(i=>i.id===id);
+  if(!item)return;
+  const favs=DB.getFavs();
+  const existIdx=favs.findIndex(f=>f.id===id);
+  if(existIdx>=0){
+    favs.splice(existIdx,1);
+    DB.saveFavs(favs);
+    showToast('즐겨찾기에서 제거했어요');
+  } else {
+    favs.unshift({...item});
+    DB.saveFavs(favs);
+    showToast('⭐ 즐겨찾기에 저장했어요!');
+  }
+  updateCounts();
+  renderHistory();
+  renderFavorites();
+}
+
+function removeFav(id,e){
+  e.stopPropagation();
+  const favs=DB.getFavs().filter(f=>f.id!==id);
+  DB.saveFavs(favs);
+  updateCounts();renderFavorites();
+  showToast('즐겨찾기에서 제거했어요');
+}
+
+function renderFavorites(){
+  const favs=DB.getFavs();
+  const grid=document.getElementById('favGrid');
+  const empty=document.getElementById('favEmpty');
+  document.getElementById('favCount').textContent=favs.length;
+  if(!favs.length){
+    grid.innerHTML='';empty.style.display='block';return;
+  }
+  empty.style.display='none';
+  grid.innerHTML=favs.map(f=>`
+    <div class="fav-thumb-box" onclick="showFavDetail(${f.id})">
+      <img src="${f.thumb}" alt="">
+      <button class="fav-remove" onclick="removeFav(${f.id},event)">✕</button>
+      <div class="fav-score-badge">${f.trend}·${f.appeal}·${f.usability}</div>
+    </div>`).join('');
+}
+
+function showFavDetail(id){
+  const fav=DB.getFavs().find(f=>f.id===id);
+  if(!fav)return;
+  lastResult=fav;lastThumb=fav.thumb;
+  renderResult(fav,fav.mode==='mine');
+  switchTab('analyze');
+  document.getElementById('previewImg').src=fav.thumb;
+  document.getElementById('previewWrap').classList.add('show');
+  showToast('분석 탭에서 확인하세요');
+}
+
+// ════════════════════════════
+// 취향 분석
+// ════════════════════════════
+async function runTasteAnalysis(){
+  const favs=DB.getFavs();
+  if(favs.length<3){showToast('즐겨찾기 3개 이상 필요해요');return}
+  document.getElementById('btnTaste').disabled=true;
+  document.getElementById('tasteResult').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>즐겨찾기 분석 중... 취향 패턴을 찾고 있어요</p></div>';
+
   const charDesc=DB.getChar();
-  const summary=h.slice(0,30).map(i=>`날짜:${i.date} 트렌드:${i.trend} 매력:${i.appeal} 사용성:${i.usability} 통과:${i.chance||'?'} 요약:${i.summary}`).join('\n');
+  const favSummary=favs.slice(0,20).map((f,i)=>
+    `[${i+1}] 트렌드:${f.trend} 매력:${f.appeal} 사용성:${f.usability} 타겟:${f.target||'?'} 요약:${f.summary} 강점:${(f.strengths||[]).join('/')} 트렌드충족:${(f.trend_detail||[]).join(',')} 매력충족:${(f.appeal_detail||[]).join(',')} 사용성충족:${(f.usage_detail||[]).join(',')}`
+  ).join('\n');
+
   try{
     const res=await fetch(API_URL,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:1000,
-        messages:[{role:'user',content:`아래 카카오 이모티콘 분석 데이터를 바탕으로 이모티콘 제작 전략 리포트를 작성해주세요.\n\n${charDesc?`제작 중인 캐릭터: "${charDesc}"`:'(캐릭터 미설정)'}\n\n분석 데이터:\n${summary}\n\n1. 트렌드 패턴 요약\n2. 높은 점수 이모티콘의 공통점\n3. 카카오 심사 통과를 위한 핵심 조언 3가지\n4. 다음 제작 우선순위 추천`}]
+        model:'claude-sonnet-4-20250514',max_tokens:1500,
+        messages:[{role:'user',content:`아래는 내가 즐겨찾기한 카카오 이모티콘 ${favs.length}개의 분석 데이터입니다.
+
+${charDesc?`내 캐릭터 설정: "${charDesc}"`:'(캐릭터 미설정)'}
+
+즐겨찾기 데이터:
+${favSummary}
+
+위 데이터를 분석해서 다음을 알려주세요:
+
+## 1. 내 취향 패턴
+- 내가 선호하는 그림체/스타일은?
+- 선호하는 타겟/주제는?
+- 높은 점수를 준 이모티콘의 공통점은?
+- 체크리스트 기준으로 자주 충족된 항목은?
+
+## 2. 내 취향 키워드 (5~7개)
+예: 손그림체 / 직장인 공감 / 귀찮음 표현 / 단색 배경 등
+
+## 3. 내 이모티콘 기획 방향 제안
+취향 데이터를 바탕으로:
+- 추천 캐릭터 컨셉 (아직 없다면 새로 제안, 있다면 발전 방향)
+- 반드시 포함해야 할 감정/상황 TOP 5
+- 피해야 할 요소
+- 카카오 승인 가능성을 높이는 핵심 전략 3가지`}]
       })
     });
-    if(!res.ok)throw new Error(`서버 오류 (${res.status})`);
+    if(!res.ok)throw new Error('분석 실패');
     const data=await res.json();
-    document.getElementById('reportContent').innerHTML=`<div class="card"><div class="card-title">AI 전략 리포트</div><div class="result-text">${data.content[0].text.replace(/\n/g,'<br>')}</div></div>`;
-  }catch(err){document.getElementById('reportContent').innerHTML=`<div class="error-wrap">리포트 생성 실패: ${err.message}</div>`}
+    const text=data.content[0].text;
+    document.getElementById('tasteResult').innerHTML=`
+      <div class="card">
+        <div class="card-title">🎯 취향 분석 결과</div>
+        <div class="result-text">${text.replace(/\n/g,'<br>').replace(/##\s/g,'<br><strong style="color:var(--accent2);font-size:12px">').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+      </div>`;
+  }catch(err){
+    document.getElementById('tasteResult').innerHTML=`<div class="error-wrap">취향 분석 실패: ${err.message}</div>`;
+  }finally{document.getElementById('btnTaste').disabled=false}
 }
 
+// ════════════════════════════
+// 기록
+// ════════════════════════════
+function setHistFilter(filter){
+  histFilter=filter;
+  ['All','Ref','Mine'].forEach(f=>document.getElementById('filter'+f).classList.remove('active'));
+  document.getElementById('filter'+filter.charAt(0).toUpperCase()+filter.slice(1)).classList.add('active');
+  renderHistory();
+}
+
+function renderHistory(){
+  const all=DB.getHistory();
+  const favs=DB.getFavs();
+  const favIds=new Set(favs.map(f=>f.id));
+  const h=histFilter==='all'?all:all.filter(i=>i.mode===histFilter);
+  const el=document.getElementById('historyList');
+  if(!h.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><p>기록이 없어요.</p></div>`;return;
+  }
+  const ct=c=>c==='높음'?'#4fd97a':c==='낮음'?'#ff6b6b':'#ffd166';
+  const trendItems=['손그림선','단순배경','공감텍스트','제한색상','유행주제'];
+  const appealItems=['독창실루엣','일관성','표정다양','시그니처','가독성'];
+  const usageItems=['타겟빈도','비언어전달','감정다양','반응형','양방향'];
+
+  el.innerHTML=h.map(i=>{
+    const isFav=favIds.has(i.id);
+    return`<div class="hist-item${isFav?' is-fav':''}" onclick="toggleHistDetail(${i.id})">
+      <img class="hist-thumb" src="${i.thumb||''}" alt="">
+      <div class="hist-body">
+        <div class="hist-top">
+          <span class="hist-date">${i.date}</span>
+          <span class="hist-mode ${i.mode==='mine'?'mine':'ref'}">${i.mode==='mine'?'🎨내작품':'🔍레퍼런스'}</span>
+          ${isFav?'<span class="hist-fav-badge">⭐</span>':''}
+        </div>
+        <div class="hist-scores">
+          <span class="hist-score">트렌드 ${i.trend}</span>
+          <span class="hist-score">매력 ${i.appeal}</span>
+          <span class="hist-score">사용성 ${i.usability}</span>
+          ${i.chance?`<span class="hist-score" style="color:${ct(i.chance)}">심사 ${i.chance}</span>`:''}
+          ${i.target?`<span class="hist-score">🎯${i.target}</span>`:''}
+        </div>
+        <div class="hist-summary">${i.summary||''}</div>
+        <div class="hist-detail" id="detail-${i.id}">
+          ${i.trend_detail&&i.trend_detail.length?`<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:800;color:var(--text3);margin-bottom:4px">TREND</div><div style="display:flex;flex-wrap:wrap;gap:3px">${trendItems.map((t,idx)=>`<span style="font-size:9px;padding:2px 6px;border-radius:8px;${(i.trend_detail||[]).includes(idx+1)?'background:rgba(79,217,122,0.15);color:#4fd97a':'background:var(--bg3);color:var(--text3)'}">${t}</span>`).join('')}</div></div>`:''}
+          ${i.appeal_detail&&i.appeal_detail.length?`<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:800;color:var(--text3);margin-bottom:4px">CHARACTER</div><div style="display:flex;flex-wrap:wrap;gap:3px">${appealItems.map((t,idx)=>`<span style="font-size:9px;padding:2px 6px;border-radius:8px;${(i.appeal_detail||[]).includes(idx+1)?'background:rgba(79,217,122,0.15);color:#4fd97a':'background:var(--bg3);color:var(--text3)'}">${t}</span>`).join('')}</div></div>`:''}
+          ${i.usage_detail&&i.usage_detail.length?`<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:800;color:var(--text3);margin-bottom:4px">USABILITY</div><div style="display:flex;flex-wrap:wrap;gap:3px">${usageItems.map((t,idx)=>`<span style="font-size:9px;padding:2px 6px;border-radius:8px;${(i.usage_detail||[]).includes(idx+1)?'background:rgba(79,217,122,0.15);color:#4fd97a':'background:var(--bg3);color:var(--text3)'}">${t}</span>`).join('')}</div></div>`:''}
+          ${i.strengths&&i.strengths.length?`<div style="margin-bottom:6px"><div style="display:flex;flex-wrap:wrap;gap:3px">${i.strengths.map(s=>`<span style="font-size:10px;background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.2);color:#4fd97a;padding:2px 7px;border-radius:10px">✓ ${s}</span>`).join('')}</div></div>`:''}
+          ${i.improvements&&i.improvements.length?`<div style="margin-bottom:6px"><div style="display:flex;flex-wrap:wrap;gap:3px">${i.improvements.map(s=>`<span style="font-size:10px;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);color:#ff6b6b;padding:2px 7px;border-radius:10px">△ ${s}</span>`).join('')}</div></div>`:''}
+          ${i.tips?`<div style="font-size:10px;color:var(--text2);line-height:1.6;margin-top:4px">${i.tips}</div>`:''}
+        </div>
+      </div>
+      <div class="hist-actions">
+        <button class="hist-star-btn" onclick="toggleHistFav(${i.id},event)" title="${isFav?'즐겨찾기 제거':'즐겨찾기 추가'}">${isFav?'⭐':'☆'}</button>
+        <button class="hist-del" onclick="event.stopPropagation();deleteItem(${i.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleHistDetail(id){
+  const el=document.getElementById('detail-'+id);
+  if(el)el.style.display=el.style.display==='block'?'none':'block';
+}
+function deleteItem(id){
+  DB.saveHistory(DB.getHistory().filter(i=>i.id!==id));
+  DB.saveFavs(DB.getFavs().filter(f=>f.id!==id));
+  renderHistory();renderFavorites();updateCounts();showToast('삭제했어요');
+}
+
+// ════════════════════════════
+// 탭 전환
+// ════════════════════════════
 function switchTab(name){
-  const names=['analyze','history','report','settings'];
+  const names=['analyze','history','favorites','taste','settings'];
   document.querySelectorAll('.tab-item').forEach((t,i)=>t.classList.toggle('active',names[i]===name));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   if(name==='history')renderHistory();
-  if(name==='report')renderReport();
-  if(name==='settings')updateHistCount();
+  if(name==='favorites')renderFavorites();
+  if(name==='taste')updateCounts();
+  if(name==='settings')updateCounts();
 }
+
+// ════════════════════════════
+// 유틸
+// ════════════════════════════
 function showError(msg){document.getElementById('errorBox').innerHTML=`<div class="error-wrap">⚠️ ${msg}</div>`}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 </script>
