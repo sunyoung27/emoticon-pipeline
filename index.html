@@ -472,7 +472,45 @@ async function runAnalysis(){
 
     // 2단계: 채점
     const mineExtra = isMine ? `
-이것은 직접 제작한 이모티콘입니다. 카카오 심사 통과 가능성을 엄격하게 평가하고, 승인을 위해 반드시 수정해야 할 점을 구체적으로 알려주세요.` : '';
+이것은 직접 제작한 이모티콘입니다. 카카오 심사 통과 가능성을 엄격하게 평가하세요.
+
+아래 카카오 공식 제안 전 확인사항 22개를 관찰 결과를 바탕으로 각각 판단해주세요.
+판단 불가 항목은 "확인필요"로 표시하세요.
+
+[구성]
+1. 구성의 일관성이 있는가?
+2. 제목과 구성이 잘 어울리는가?
+3. 구성이 다양한가?
+4. 구성이 재미있는가?
+5. 타겟이 모호하지 않은가?
+
+[캐릭터]
+6. 캐릭터 비율이 잘 유지되고 있는가?
+7. 구성 배치 순서가 적절한가?
+8. 캐릭터의 형태가 어색하지 않은가?
+9. 캐릭터 완성도가 높은가?
+10. 멘트를 삭제해도 그림만으로 모호하지 않은가?
+
+[컨셉]
+11. 키워드만으로도 컨셉이 이해되는가?
+12. 선 굵기가 일관되었는가?
+13. 사용 컬러 구성이 적절한가? (컬러 수, 채도 등)
+14. 채팅에서 사용하기 좋은 구성인가?
+15. 멘트와 그림의 표정/포즈가 잘 어울리는가?
+
+[텍스트]
+16. 컨셉과 그림 스타일에 맞는 폰트를 사용했는가?
+17. 텍스트 가독성이 있는가?
+18. 폰트 크기가 너무 작거나 크지 않은가?
+19. 멘트 배치가 너무 다양하지 않은가?
+20. 멘트가 너무 길어서 가독성이 떨어지지 않는가?
+21. 텍스트에 흰색 스트로크가 있는가?
+
+[기술]
+22. 이미지 사이즈가 맞는가? (이미지 보고 판단 가능한 경우)
+
+결과를 JSON의 kakao_checklist 필드에 포함하세요:
+{"1":true/false/"확인필요", "2":true/false/"확인필요", ...}` : '';
 
     const res=await fetch(API_URL,{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -482,11 +520,11 @@ async function runAnalysis(){
 
 ━━ trend_fit 채점 ━━
 관찰 결과에서 실제 확인된 항목만 ✓:
-① 손그림/수채화/불규칙한 선 (디지털 클린선 아님)
-② 배경 없음 또는 단색 단순 배경
-③ 직장인/일상/감정 공감 텍스트 문구 존재
-④ 2가지 이하 제한 색상
-⑤ 현재 카카오에서 인기 있는 주제 (이모티콘의 주제/상황에서 판단)
+① 그림체 일관성: 전체 컷에서 선/채색/스타일이 통일되어 있음
+② 배경 처리: 배경 없음 또는 단순 배경으로 캐릭터가 명확히 돋보임
+③ 공감 텍스트: 실제 대화에서 자연스럽게 쓸 법한 문구 포함
+④ 색감 조화: 다른 이모티콘과 동떨어질 정도로 튀거나 복잡하지 않고 전체적으로 통일감 있음
+⑤ 유행 주제 반영: 이모티콘의 주제/상황이 현재 카카오 스토어에서 인기 있는 감성/트렌드와 맞닿아 있음
 
 ━━ character_appeal 채점 ━━
 ① 다른 캐릭터와 구별되는 독창적 실루엣
@@ -512,7 +550,7 @@ async function runAnalysis(){
 세 점수는 반드시 서로 달라야 함. 동일 점수 절대 금지.
 
 반드시 JSON만 출력:
-{"trend_fit":숫자,"trend_fit_detail":[번호배열],"character_appeal":숫자,"character_appeal_detail":[번호배열],"usability":숫자,"usability_detail":[번호배열],"target":"타겟대상","summary":"25자이내요약","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2","개선점3"],"strategy_tips":"전략메모(3문장)","approval_chance":"높음|보통|낮음"}`,
+{"trend_fit":숫자,"trend_fit_detail":[번호배열],"character_appeal":숫자,"character_appeal_detail":[번호배열],"usability":숫자,"usability_detail":[번호배열],"target":"타겟대상","summary":"25자이내요약","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2","개선점3"],"strategy_tips":"전략메모(3문장)","approval_chance":"높음|보통|낮음","kakao_checklist":{"1":true/false/확인필요,...}}`,
         messages:[{role:'user',content:[
           {type:'text',text:`관찰 결과:\n${obs}\n\n${charContext}${mineExtra}\n\n위 관찰 결과만 근거로 채점해주세요. strategy_tips에는 이미지에서 파악한 실제 타겟을 먼저 밝히고(직장인으로 단정 금지, 이미지 내용 근거로 판단), 내 캐릭터 제작에 적용할 전략을 작성해주세요.`}
         ]}]
@@ -535,7 +573,7 @@ function scoreColor(v){return v>=7?'high':v>=4?'mid':'low'}
 
 function renderResult(r,isMine){
   const cc=r.approval_chance==='높음'?'green':r.approval_chance==='낮음'?'red':'';
-  const trendItems=['손그림/수채화 선','배경 없음/단순','공감 텍스트 포함','2색 이하 팔레트','유행 주제 반영'];
+  const trendItems=['그림체 일관성','배경 단순/없음','공감 텍스트 포함','색감 조화','유행 주제 반영'];
   const appealItems=['독창적 실루엣','캐릭터 일관성','표정 5종 이상','시그니처 요소','작은 크기 가독성'];
   const usageItems=['타겟 상황 빈도 높음','비언어 감정 전달','타겟 내 감정 다양','범용 반응 컷 포함','양방향 공감 가능'];
 
@@ -592,12 +630,66 @@ function renderResult(r,isMine){
       <div class="card-title">제작 전략 메모</div>
       <div class="result-text">${r.strategy_tips}</div>
     </div>
+    ${isMine && r.kakao_checklist ? renderKakaoChecklist(r.kakao_checklist) : ''}
     <button class="fav-btn" id="favBtn" onclick="toggleFavFromResult()">
       ⭐ 즐겨찾기에 저장하기
     </button>`;
 
   // 이미 즐겨찾기인지 확인
   updateFavBtn();
+}
+
+function renderKakaoChecklist(cl){
+  if(!cl)return'';
+  const groups=[
+    {label:'구성',items:[1,2,3,4,5]},
+    {label:'캐릭터',items:[6,7,8,9,10]},
+    {label:'컨셉',items:[11,12,13,14,15]},
+    {label:'텍스트',items:[16,17,18,19,20,21]},
+    {label:'기술',items:[22]},
+  ];
+  const labels={
+    1:'구성 일관성',2:'제목·구성 조화',3:'구성 다양성',4:'구성 재미',5:'타겟 명확성',
+    6:'캐릭터 비율',7:'배치 순서',8:'형태 자연스러움',9:'캐릭터 완성도',10:'그림만으로 전달',
+    11:'키워드 컨셉 이해',12:'선 굵기 일관성',13:'컬러 구성',14:'채팅 사용성',15:'멘트·표정 조화',
+    16:'폰트 적합성',17:'텍스트 가독성',18:'폰트 크기',19:'멘트 배치',20:'멘트 길이',21:'흰색 스트로크',
+    22:'이미지 사이즈'
+  };
+  const passCount=Object.values(cl).filter(v=>v===true).length;
+  const failCount=Object.values(cl).filter(v=>v===false).length;
+  const needCount=Object.values(cl).filter(v=>v==='확인필요').length;
+
+  const groupHtml=groups.map(g=>`
+    <div style="margin-bottom:10px">
+      <div style="font-size:9px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:5px">${g.label}</div>
+      ${g.items.map(n=>{
+        const v=cl[n]||cl[String(n)];
+        const ok=v===true;const fail=v===false;
+        return\`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
+          <span style="flex-shrink:0;font-size:13px;color:\${ok?'var(--green)':fail?'var(--red)':'var(--yellow)'}">\${ok?'✓':fail?'✗':'?'}</span>
+          <span style="color:\${ok?'var(--text)':fail?'var(--red)':'var(--text3)'};\${fail?'font-weight:800':''}">\${n}. \${labels[n]}</span>
+        </div>\`;
+      }).join('')}
+    </div>`).join('');
+
+  return\`<div class="card">
+    <div class="card-title">📋 카카오 공식 체크리스트</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <div style="flex:1;background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.2);border-radius:8px;padding:8px;text-align:center">
+        <div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--green)">\${passCount}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">통과</div>
+      </div>
+      <div style="flex:1;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);border-radius:8px;padding:8px;text-align:center">
+        <div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--red)">\${failCount}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">미통과</div>
+      </div>
+      <div style="flex:1;background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:8px;text-align:center">
+        <div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--yellow)">\${needCount}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">확인필요</div>
+      </div>
+    </div>
+    \${groupHtml}
+  </div>\`;
 }
 
 function scoreBox(label,val){
@@ -799,7 +891,7 @@ function renderHistory(){
     el.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><p>기록이 없어요.</p></div>`;return;
   }
   const ct=c=>c==='높음'?'#4fd97a':c==='낮음'?'#ff6b6b':'#ffd166';
-  const trendItems=['손그림선','단순배경','공감텍스트','제한색상','유행주제'];
+  const trendItems=['그림체일관','단순배경','공감텍스트','색감조화','유행주제'];
   const appealItems=['독창실루엣','일관성','표정다양','시그니처','가독성'];
   const usageItems=['타겟빈도','비언어전달','감정다양','반응형','양방향'];
 
