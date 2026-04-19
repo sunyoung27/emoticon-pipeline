@@ -321,10 +321,36 @@ async function runAnalysis(){
   if(!currentBase64){showError('이미지를 먼저 선택해주세요!');return}
   document.getElementById('btnAnalyze').disabled=true;
   document.getElementById('errorBox').innerHTML='';
-  document.getElementById('resultBox').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>AI가 이모티콘을 분석하는 중...</p></div>';
+  document.getElementById('resultBox').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>1단계: 이모티콘 관찰 중...</p></div>';
   const charDesc=DB.getChar();
   const charContext=charDesc?`분석 결과는 다음 캐릭터 제작에 활용됩니다: "${charDesc}"`:'범용 카카오 이모티콘 분석을 진행합니다.';
   try{
+    // ── 1단계: 이미지 상세 관찰 ──
+    const step1=await fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:800,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
+          {type:'text',text:`이 카카오 이모티콘 이미지를 보고 아래 항목을 사실 그대로 묘사하세요. 평가나 판단 없이 보이는 것만 기록하세요.
+
+1. 그림체: 선의 느낌(손그림/디지털클린/수채화 등), 선 굵기, 불규칙성
+2. 색상: 사용된 색상 수, 주요 색상, 배경 유무
+3. 캐릭터: 어떤 캐릭터인지, 특징적인 요소, 표정 종류와 개수
+4. 텍스트: 포함된 문구들을 모두 나열
+5. 상황: 각 컷에서 어떤 상황/감정을 표현하는지
+6. 전체 컷 수와 구성`}
+        ]}]
+      })
+    });
+    if(!step1.ok) throw new Error('1단계 실패');
+    const step1data=await step1.json();
+    const observation=step1data.content[0].text;
+
+    document.getElementById('resultBox').innerHTML='<div class="loading-wrap"><div class="loader"></div><p>2단계: 심사 기준으로 채점 중...</p></div>';
+
+    // ── 2단계: 관찰 결과 기반 채점 ──
     const res=await fetch(API_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -387,7 +413,7 @@ function renderResult(r){
   const cc=r.approval_chance==='높음'?'green':r.approval_chance==='낮음'?'red':'';
   const trendItems=['손그림/수채화 선 느낌','배경 없음/단순','공감 텍스트 포함','제한된 색상 팔레트','유행 주제 반영'];
   const appealItems=['독창적 실루엣','캐릭터 일관성','표정 5가지 이상','시그니처 요소','작은 크기 가독성'];
-  const usageItems=['일상 다빈도 상황','텍스트 없이 감정 전달','보편적 공감 상황','단순 반응형 포함','다양한 상황 커버'];
+  const usageItems=['타겟 상황 빈도 높음','맥락 내 비언어 전달','타겟 내 감정 다양성','범용 기본 반응 포함','양방향 공감 가능'];
   function checkList(items, detail){
     const ok=detail||[];
     return items.map((item,i)=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
