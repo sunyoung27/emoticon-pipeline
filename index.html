@@ -330,21 +330,42 @@ async function runAnalysis(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',max_tokens:1000,
-        system:`당신은 카카오 이모티콘 심사 전문가입니다. 냉정하고 객관적으로 분석하세요.
+        system:`당신은 카카오 이모티콘 심사 전문가입니다. 아래 세부 기준으로 냉정하게 분석하세요.
 
-점수 기준:
-- trend_fit: 현재 카카오 승인 트렌드 일치도 (손그림체, 공감 텍스트, 단순 배경 등)
-- character_appeal: 캐릭터 개성, 표정 다양성, 일관성, 독창성
-- usability: 실제 대화에서의 활용도 (텍스트 공감도, 상황 다양성)
+━━ trend_fit (트렌드 적합성) 채점 기준 ━━
+다음 5가지를 각각 확인하고 충족 개수로 점수를 산정하세요:
+① 손그림/수채화/불규칙한 선 느낌 (디지털 깔끔체 아님)
+② 배경 없음 또는 매우 단순한 배경
+③ 공감 텍스트 포함 (직장인/일상/감정 표현 문구)
+④ 1~2가지 제한된 색상 팔레트
+⑤ 현재 유행하는 주제 (번아웃/귀찮음/소확행/직장생활 등)
+→ 5개 충족=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
 
-점수 규칙 (반드시 준수):
-- 세 점수는 반드시 서로 달라야 합니다. 동일 점수 금지.
-- 각 항목을 독립적으로 평가. 전체 인상으로 통일 금지.
-- 범위: 2~9점. 평균 수준은 4~6점, 우수하면 7~8점.
-- 10점, 1점은 극히 예외적인 경우만 허용.
+━━ character_appeal (캐릭터 매력도) 채점 기준 ━━
+다음 5가지를 각각 확인하세요:
+① 캐릭터 실루엣이 한눈에 구별되는 독창적 형태
+② 모든 컷에서 캐릭터 형태/색상/스타일 일관성 유지
+③ 표정이 최소 5가지 이상 다양하게 표현됨
+④ 캐릭터만의 시그니처 요소 존재 (특정 아이템/포즈/말투)
+⑤ 작은 크기(카톡 썸네일)에서도 표정이 잘 읽힘
+→ 5개=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
+
+━━ usability (실사용성) 채점 기준 ━━
+다음 5가지를 각각 확인하세요:
+① 일상 대화에서 하루 1회 이상 쓸 수 있는 상황의 이모티콘이 절반 이상
+② 텍스트 없이 이미지만으로도 감정 전달 가능
+③ 연령/성별 무관하게 공감 가능한 보편적 상황 포함
+④ 단순 반응형(ㅋㅋ/ㅠㅠ 대체) 이모티콘이 충분히 포함
+⑤ 특정 상황(사과/감사/거절/동의 등) 커버 다양성
+→ 5개=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
+
+━━ 점수 규칙 (반드시 준수) ━━
+- 세 점수는 반드시 서로 달라야 합니다. 동일 점수 절대 금지.
+- 위 체크리스트 결과를 그대로 반영. 전체 인상으로 통일 금지.
+- trend_fit_detail, character_appeal_detail, usability_detail에 충족한 항목 번호를 배열로 기록.
 
 반드시 아래 JSON 형식으로만 응답. 마크다운 없이 순수 JSON만 출력.
-{"trend_fit":숫자,"character_appeal":숫자,"usability":숫자,"summary":"한 줄 핵심 요약 (25자 이내)","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2"],"strategy_tips":"내 캐릭터 제작에 적용할 구체적 전략 (2-3문장)","approval_chance":"높음|보통|낮음"}`,
+{"trend_fit":숫자,"trend_fit_detail":[충족항목번호들],"character_appeal":숫자,"character_appeal_detail":[충족항목번호들],"usability":숫자,"usability_detail":[충족항목번호들],"summary":"한 줄 핵심 요약 (25자 이내)","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2"],"strategy_tips":"내 캐릭터 제작에 적용할 구체적 전략 (2-3문장)","approval_chance":"높음|보통|낮음"}`,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
           {type:'text',text:`이 카카오 이모티콘 이미지를 전문적으로 분석해주세요.\n\n${charContext}\n\n트렌드 적합성, 캐릭터 매력도, 실사용성을 평가하고 카카오 심사 통과 가능성과 제작 전략을 알려주세요.`}
@@ -364,11 +385,33 @@ async function runAnalysis(){
 function scoreColor(v){return v>=8?'high':v>=5?'mid':'low'}
 function renderResult(r){
   const cc=r.approval_chance==='높음'?'green':r.approval_chance==='낮음'?'red':'';
+  const trendItems=['손그림/수채화 선 느낌','배경 없음/단순','공감 텍스트 포함','제한된 색상 팔레트','유행 주제 반영'];
+  const appealItems=['독창적 실루엣','캐릭터 일관성','표정 5가지 이상','시그니처 요소','작은 크기 가독성'];
+  const usageItems=['일상 다빈도 상황','텍스트 없이 감정 전달','보편적 공감 상황','단순 반응형 포함','다양한 상황 커버'];
+  function checkList(items, detail){
+    const ok=detail||[];
+    return items.map((item,i)=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px">
+      <span style="color:${ok.includes(i+1)?'var(--green)':'var(--red)'};font-size:13px">${ok.includes(i+1)?'✓':'✗'}</span>
+      <span style="color:${ok.includes(i+1)?'var(--text)':'var(--text3)'}">${item}</span>
+    </div>`).join('');
+  }
   document.getElementById('resultBox').innerHTML=`
     <div class="card"><div class="card-title">분석 점수</div>
       <div class="scores-row">${['트렌드','매력도','사용성'].map((l,i)=>scoreBox(l,[r.trend_fit,r.character_appeal,r.usability][i])).join('')}</div>
       <div class="result-summary">${r.summary}</div>
       <div class="tag-list"><span class="tag ${cc}">심사 통과 ${r.approval_chance}</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">트렌드 체크리스트</div>
+      ${checkList(trendItems, r.trend_fit_detail)}
+    </div>
+    <div class="card">
+      <div class="card-title">캐릭터 매력 체크리스트</div>
+      ${checkList(appealItems, r.character_appeal_detail)}
+    </div>
+    <div class="card">
+      <div class="card-title">사용성 체크리스트</div>
+      ${checkList(usageItems, r.usability_detail)}
     </div>
     <div class="card"><div class="card-title">강점</div>
       <div class="tag-list">${(r.strengths||[]).map(s=>`<span class="tag green">✓ ${s}</span>`).join('')}</div>
