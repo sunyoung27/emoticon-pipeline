@@ -1225,11 +1225,7 @@ ${mineSummary}
           <div style="font-size:10px;color:var(--text3)">${new Date().toLocaleDateString('ko-KR')}</div>
         </div>
         <div style="font-size:12px;line-height:1.8;color:var(--text2);white-space:pre-line">${
-          text.replace(/## /g,'<br><strong style="color:var(--accent2);font-size:13px;display:block;margin-top:12px;margin-bottom:4px">')
-             .replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--text)">$1</strong>')
-             .replace(/
-
-/g,'<br>')
+          text.replace(/## /g,'<br><strong style="color:var(--accent2);font-size:13px;display:block;margin-top:12px;margin-bottom:4px">').replace(/\n/g,'<br>')
         }</div>
       </div>`;
 
