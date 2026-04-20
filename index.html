@@ -986,11 +986,8 @@ ${favSummary}
     if(!res.ok)throw new Error('분석 실패');
     const data=await res.json();
     const text=data.content[0].text;
-    document.getElementById('tasteResult').innerHTML=`
-      <div class="card">
-        <div class="card-title">🎯 취향 분석 결과</div>
-        <div        <div class="result-text" id="tasteTextContent"></div>
-      </div>`;
+    document.getElementById('tasteResult').innerHTML='<div class="card"><div class="card-title">🎯 취향 분석 결과</div><div class="result-text" id="tasteTextContent"></div></div>';
+    document.getElementById('tasteTextContent').innerHTML=text.replace(/\n/g,'<br>');
   }catch(err){
     document.getElementById('tasteResult').innerHTML=`<div class="error-wrap">취향 분석 실패: ${err.message}</div>`;
   }finally{document.getElementById('btnTaste').disabled=false}
