@@ -29,7 +29,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Na
 .app-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,106,247,0.2) 0%,transparent 70%);pointer-events:none}
 .header-inner{display:flex;align-items:center;gap:12px;position:relative}
 .app-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#b06af7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(124,106,247,0.4);flex-shrink:0}
-.app-title{font-family:'Gmarket Sans',sans-serif;font-weight:700;font-size:16px;color:var(--text)}
+.app-title{font-family:&quot;Gmarket Sans&quot;,sans-serif;font-weight:700;font-size:16px;color:var(--text)}
 .app-subtitle{font-size:9px;color:var(--text3);margin-top:1px;letter-spacing:0.5px;text-transform:uppercase}
 .pwa-btn{margin-left:auto;background:rgba(124,106,247,0.15);border:1px solid rgba(124,106,247,0.3);color:var(--accent2);padding:5px 9px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;display:none;white-space:nowrap;font-family:'Nanum Gothic',sans-serif}
 .pwa-btn.visible{display:block}
@@ -85,7 +85,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Na
 /* SCORES */
 .scores-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .score-box{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 4px;text-align:center;border:1px solid var(--border)}
-.score-num{font-family:'Gmarket Sans',sans-serif;font-size:24px;font-weight:700;color:var(--accent2);line-height:1}
+.score-num{font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:24px;font-weight:700;color:var(--accent2);line-height:1}
 .score-num.high{color:var(--green)}.score-num.mid{color:var(--yellow)}.score-num.low{color:var(--red)}
 .score-lbl{font-size:9px;color:var(--text3);margin-top:3px}
 .score-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden}
@@ -148,7 +148,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Na
 /* TASTE ANALYSIS */
 .taste-hero{background:linear-gradient(135deg,#1a1428,#1f1a35);border:1px solid rgba(255,209,102,0.2);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
 .taste-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:radial-gradient(circle,rgba(255,209,102,0.15) 0%,transparent 70%)}
-.taste-hero h2{font-family:'Gmarket Sans',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
+.taste-hero h2{font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
 .taste-hero p{font-size:11px;color:var(--text3);position:relative}
 .taste-count{display:inline-block;background:rgba(255,209,102,0.15);border:1px solid rgba(255,209,102,0.3);color:var(--star);padding:2px 10px;border-radius:10px;font-size:11px;font-weight:800;margin-top:6px}
 
@@ -164,11 +164,11 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Na
 /* REPORT */
 .report-hero{background:linear-gradient(135deg,#1a1830,#231f45);border:1px solid rgba(124,106,247,0.3);border-radius:var(--radius);padding:18px;margin-bottom:12px;position:relative;overflow:hidden}
 .report-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:radial-gradient(circle,rgba(124,106,247,0.3) 0%,transparent 70%)}
-.report-hero h2{font-family:'Gmarket Sans',sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
+.report-hero h2{font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;position:relative}
 .report-hero p{font-size:11px;color:var(--text3);position:relative}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 6px;text-align:center}
-.stat-num{font-family:'Gmarket Sans',sans-serif;font-size:24px;font-weight:700;color:var(--accent2)}
+.stat-num{font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:24px;font-weight:700;color:var(--accent2)}
 .stat-lbl{font-size:9px;color:var(--text3);margin-top:3px}
 .btn-report{width:100%;padding:13px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;margin-bottom:10px;transition:border-color 0.2s,background 0.2s}
 .btn-report:active{background:rgba(124,106,247,0.1);border-color:var(--accent)}
@@ -278,7 +278,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Na
         <div style="font-size:13px;font-weight:800;color:var(--text)">⭐ 즐겨찾기 컬렉션</div>
         <div style="font-size:10px;color:var(--text3);margin-top:3px">마음에 든 이모티콘을 모아두세요</div>
       </div>
-      <div id="favCount" style="font-family:'Gmarket Sans',sans-serif;font-size:22px;font-weight:700;color:var(--star)">0</div>
+      <div id="favCount" style="font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:22px;font-weight:700;color:var(--star)">0</div>
     </div>
   </div>
   <div id="favGrid" class="fav-grid"></div>
@@ -708,9 +708,9 @@ function renderKakaoChecklist(cl){
   var html='<div class="card">';
   html+='<div class="card-title">📋 카카오 공식 체크리스트</div>';
   html+='<div style="display:flex;gap:8px;margin-bottom:12px">';
-  html+='<div style="flex:1;background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--green)">'+passCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">통과</div></div>';
-  html+='<div style="flex:1;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--red)">'+failCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">미통과</div></div>';
-  html+='<div style="flex:1;background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:'Gmarket Sans',sans-serif;font-size:20px;font-weight:700;color:var(--yellow)">'+needCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">확인필요</div></div>';
+  html+='<div style="flex:1;background:rgba(79,217,122,0.1);border:1px solid rgba(79,217,122,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:20px;font-weight:700;color:var(--green)">'+passCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">통과</div></div>';
+  html+='<div style="flex:1;background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:20px;font-weight:700;color:var(--red)">'+failCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">미통과</div></div>';
+  html+='<div style="flex:1;background:rgba(255,209,102,0.1);border:1px solid rgba(255,209,102,0.2);border-radius:8px;padding:8px;text-align:center"><div style="font-family:&quot;Gmarket Sans&quot;,sans-serif;font-size:20px;font-weight:700;color:var(--yellow)">'+needCount+'</div><div style="font-size:9px;color:var(--text3);margin-top:2px">확인필요</div></div>';
   html+='</div>';
   html+=groupHtml;
   html+='</div>';
