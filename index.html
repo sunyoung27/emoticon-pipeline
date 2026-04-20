@@ -574,11 +574,14 @@ async function runAnalysis(){
 ━━ 채점 규칙 ━━
 충족 5개=9점, 4개=7점, 3개=5점, 2개=3점, 1개 이하=2점
 세 점수는 반드시 서로 달라야 함. 동일 점수 절대 금지.
+각 이모티콘마다 다른 점수가 나와야 함. 이전 분석과 무관하게 이 이미지만 독립적으로 평가.
+체크리스트는 이 이미지에서 실제로 확인된 것만 ✓. 확인 안 되면 반드시 ✗.
 
 반드시 JSON만 출력:
 {"trend_fit":숫자,"trend_fit_detail":[번호배열],"character_appeal":숫자,"character_appeal_detail":[번호배열],"usability":숫자,"usability_detail":[번호배열],"target":"타겟대상","summary":"25자이내요약","strengths":["강점1","강점2","강점3"],"improvements":["개선점1","개선점2","개선점3"],"strategy_tips":"전략메모(3문장)","approval_chance":"높음|보통|낮음","kakao_checklist":{"1":true/false/확인필요,...}}`,
         messages:[{role:'user',content:[
-          {type:'text',text:`관찰 결과:\n${obs}\n\n${charContext}${mineExtra}\n\n위 관찰 결과만 근거로 채점해주세요. strategy_tips에는 이미지에서 파악한 실제 타겟을 먼저 밝히고(직장인으로 단정 금지, 이미지 내용 근거로 판단), 내 캐릭터 제작에 적용할 전략을 작성해주세요.`}
+          {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
+          {type:'text',text:`이미지를 직접 보면서 아래 관찰 결과를 참고해 채점하세요.\n\n관찰 결과:\n${obs}\n\n${charContext}${mineExtra}\n\n주의사항:\n- 이미지를 직접 보고 각 항목을 독립적으로 판단하세요\n- 세 점수는 반드시 서로 달라야 합니다\n- strategy_tips: 실제 타겟을 먼저 밝히고(직장인 단정 금지) 이 이모티콘에서 배울 점과 내 캐릭터 적용 전략을 구체적으로 작성하세요`}
         ]}]
       })
     });
