@@ -349,9 +349,21 @@ const DB={
 // INIT
 // ════════════════════════════
 window.addEventListener('DOMContentLoaded',()=>{
+  // 기존 저장 데이터 썸네일 정리 (용량 절약)
+  try{
+    const h=DB.getHistory();
+    let changed=false;
+    h.forEach(i=>{
+      if(i.thumb&&i.thumb.length>5000){
+        compressThumb(i.thumb,function(t){i.thumb=t;});
+        changed=true;
+      }
+    });
+    if(changed)setTimeout(()=>DB.saveHistory(h),2000);
+  }catch(e){}
   const char=DB.getChar();
   if(char)document.getElementById('charDesc').value=char;
-  updateCounts();renderReport&&renderReport();
+  updateCounts();
   const uc=document.getElementById('uploadCard');
   uc.addEventListener('dragover',e=>{e.preventDefault();uc.classList.add('drag-over')});
   uc.addEventListener('dragleave',()=>uc.classList.remove('drag-over'));
@@ -402,9 +414,24 @@ function clearAllData(){
 // ════════════════════════════
 // 이미지
 // ════════════════════════════
+// 썸네일 압축 (저장용 - 최대 120px, 퀄리티 0.5)
+function compressThumb(dataUrl, cb){
+  const img=new Image();
+  img.onload=function(){
+    const MAX=120;
+    let w=img.width,h=img.height;
+    if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
+    else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+    const canvas=document.createElement('canvas');
+    canvas.width=w;canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    cb(canvas.toDataURL('image/jpeg',0.5));
+  };
+  img.src=dataUrl;
+}
+
 function handleFile(file){
   if(!file){showToast('파일을 인식하지 못했어요');return}
-  // MIME 타입 없는 경우 확장자로 보완
   let mime=file.type;
   if(!mime||mime===''){
     const ext=file.name.split('.').pop().toLowerCase();
@@ -412,7 +439,6 @@ function handleFile(file){
     mime=map[ext]||'image/jpeg';
   }
   if(!mime.startsWith('image/')){showToast('이미지 파일만 가능해요 (jpg/png/gif/webp)');return}
-  // 파일 크기 체크 (10MB 초과 시 경고)
   if(file.size>10*1024*1024){showToast('파일이 너무 커요. 10MB 이하 이미지를 사용해주세요');return}
   currentName=file.name||'이미지';currentMime=mime;
   const reader=new FileReader();
@@ -421,7 +447,11 @@ function handleFile(file){
       const result=e.target.result;
       if(!result||!result.includes(',')){showToast('이미지를 읽을 수 없어요');return}
       currentBase64=result.split(',')[1];
-      lastThumb=result;
+      // 분석용 원본은 유지, 저장용 썸네일만 압축
+      compressThumb(result, function(thumb){
+        lastThumb=thumb;
+      });
+      lastThumb=result; // 즉시 할당 (압축 완료 전 분석 대비)
       document.getElementById('previewImg').src=result;
       document.getElementById('previewName').textContent=currentName+' ('+Math.round(file.size/1024)+'KB)';
       document.getElementById('previewWrap').classList.add('show');
@@ -730,7 +760,7 @@ function persistHistory(r){
   h.unshift({
     id:Date.now(),
     date:new Date().toLocaleDateString('ko-KR'),
-    thumb:lastThumb,
+    thumb:lastThumb||'',
     mode:currentMode,
     char:DB.getChar().slice(0,30)||'범용',
     trend:r.trend_fit,appeal:r.character_appeal,usability:r.usability,
@@ -742,7 +772,16 @@ function persistHistory(r){
     usage_detail:r.usability_detail||[]
   });
   if(h.length>200)h.pop();
-  DB.saveHistory(h);
+  try{DB.saveHistory(h);}catch(e){
+    // 용량 초과시 오래된 기록 절반 삭제 후 재시도
+    h.splice(50);
+    h.forEach(i=>{if(i.thumb&&i.thumb.length>500)i.thumb=i.thumb.substring(0,500)+'...'});
+    try{DB.saveHistory(h);}catch(e2){
+      localStorage.removeItem('ep_history');
+      DB.saveHistory([h[0]]);
+      showToast('저장 공간 부족으로 오래된 기록을 정리했어요');
+    }
+  }
 }
 
 // ════════════════════════════
