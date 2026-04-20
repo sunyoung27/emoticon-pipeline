@@ -22,7 +22,7 @@
   --shadow-lg:0 16px 48px rgba(0,0,0,0.5);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Nanum Gothic',sans-serif;overscroll-behavior:none}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Nanum Gothic,sans-serif;overscroll-behavior:none}
 
 /* HEADER */
 .app-header{padding:20px 20px 16px;background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
@@ -1226,12 +1226,102 @@ ${mineSummary}
         }</div>
       </div>`;
 
+    // 이미지 프롬프트 버튼 추가
+    const promptBtn = document.createElement('button');
+    promptBtn.id = 'btnPrompt';
+    promptBtn.textContent = '🎨 이미지 생성 프롬프트 만들기';
+    promptBtn.style.cssText = 'width:100%;padding:13px;background:linear-gradient(135deg,#1a1a3a,#2a2060);color:var(--accent2);border:1.5px solid var(--accent);border-radius:var(--radius-sm);font-size:13px;font-weight:800;cursor:pointer;font-family:"Nanum Gothic",sans-serif;margin-top:10px;transition:opacity 0.2s';
+    promptBtn.onclick = function(){ runPromptGeneration(charName, charDesc, text); };
+    document.getElementById('planResult').appendChild(promptBtn);
+
     showToast('기획서 생성 완료! 📝');
   }catch(err){
-    document.getElementById('planResult').innerHTML=`<div class="error-wrap">기획서 생성 실패: ${err.message}</div>`;
+    document.getElementById('planResult').innerHTML='<div class="error-wrap">기획서 생성 실패: '+err.message+'</div>';
   }finally{
     document.getElementById('btnPlan').disabled=false;
   }
+}
+
+async function runPromptGeneration(charName, charDesc, planText){
+  const btn=document.getElementById('btnPrompt');
+  if(btn)btn.disabled=true;
+  let promptDiv=document.getElementById('promptResult');
+  if(!promptDiv){
+    promptDiv=document.createElement('div');
+    promptDiv.id='promptResult';
+    document.getElementById('planResult').appendChild(promptDiv);
+  }
+  promptDiv.innerHTML='<div class="loading-wrap"><div class="loader"></div><p>이미지 생성 프롬프트 작성 중...</p></div>';
+
+  const charInfo=(charName||'캐릭터')+(charDesc?(' - '+charDesc):'');
+  const targets=selectedTargets.join(', ');
+  const prompt=[
+    '아래 카카오 이모티콘 기획서를 바탕으로 이미지 생성 프롬프트를 작성해주세요.',
+    '',
+    '캐릭터: '+charInfo,
+    '타겟: '+targets,
+    '',
+    '기획서 내용:',
+    planText,
+    '',
+    '아래 형식으로 작성해주세요:',
+    '',
+    '## 1. 캐릭터 기본 스타일 프롬프트',
+    '### DALL-E (영어)',
+    '캐릭터 기본 외형을 묘사하는 영어 프롬프트 (카카오 이모티콘 스타일)',
+    '',
+    '### Midjourney (영어+파라미터)',
+    '캐릭터 프롬프트 + --style cute --ar 1:1 --v 6 등 파라미터 포함',
+    '',
+    '### 한글 프롬프트',
+    '국내 AI 도구(뤼튼, Krea 등)용 한글 프롬프트',
+    '',
+    '## 2. 대표 컷 5개 프롬프트',
+    '기획서의 24컷 중 중요한 5컷을 선택해서 각각:',
+    '컷 설명 | DALL-E | Midjourney | 한글',
+    '',
+    '## 3. 프롬프트 작성 팁',
+    '캐릭터 일관성을 위한 핵심 키워드와 주의사항'
+  ].join(String.fromCharCode(10));
+
+  try{
+    const res=await fetch(API_URL,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok)throw new Error('생성 실패');
+    const data=await res.json();
+    const text=data.content[0].text;
+
+    promptDiv.dataset.rawText=text;
+    var pHtml='<div class="card" style="margin-top:10px">';
+    pHtml+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+    pHtml+='<div class="card-title" style="margin-bottom:0">🎨 이미지 생성 프롬프트</div>';
+    pHtml+='<button onclick="copyPrompt()" style="background:var(--accent);color:white;border:none;border-radius:8px;padding:5px 10px;font-size:10px;font-weight:800;cursor:pointer">복사</button>';
+    pHtml+='</div>';
+    pHtml+='<div style="font-size:12px;line-height:1.8;color:var(--text2)" id="promptTextContent"></div>';
+    pHtml+='</div>';
+    promptDiv.innerHTML=pHtml;
+    document.getElementById('promptTextContent').innerHTML=text.replace(/\n/g,'<br>');
+    showToast('프롬프트 생성 완료! 🎨');
+  }catch(err){
+    promptDiv.innerHTML='<div class="error-wrap">프롬프트 생성 실패: '+err.message+'</div>';
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+}
+function copyPrompt(){
+  const div = document.getElementById('promptResult');
+  const text = div ? div.dataset.rawText : '';
+  if(!text){ showToast('복사할 내용이 없어요'); return; }
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast('클립보드에 복사됐어요! 📋');
+  }).catch(()=>{
+    showToast('복사 실패. 직접 선택해서 복사해주세요');
+  });
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
