@@ -191,6 +191,12 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Nan
 .install-text{flex:1;font-size:11px;color:var(--text2);line-height:1.5}
 .install-text strong{color:var(--accent2);display:block;margin-bottom:1px}
 .btn-install{background:var(--accent);color:white;border:none;border-radius:8px;padding:7px 11px;font-size:10px;font-weight:800;cursor:pointer;font-family:'Nanum Gothic',sans-serif;white-space:nowrap;flex-shrink:0}
+.fav-card{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;cursor:pointer;transition:border-color 0.2s}
+.fav-card:active{border-color:var(--accent)}
+.fav-scores{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:5px;font-size:10px}
+.fav-summary{font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px}
+.fav-target{font-size:10px;color:var(--text3);margin-bottom:2px}
+.fav-chance{font-size:10px;font-weight:800}
 .target-btn{padding:5px 10px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:10px;font-weight:700;cursor:pointer;font-family:'Nanum Gothic',sans-serif;transition:all 0.2s}
 .target-btn.active{border-color:var(--green);color:var(--green);background:rgba(79,217,122,0.1)}
 </style>
@@ -930,11 +936,29 @@ function renderFavorites(){
 function showFavDetail(id){
   const fav=DB.getFavs().find(f=>f.id===id);
   if(!fav)return;
-  lastResult=fav;lastThumb=fav.thumb;
-  renderResult(fav,fav.mode==='mine');
+  // fav는 trend/appeal/usability 로 저장, renderResult는 trend_fit/character_appeal 필요
+  const mapped={
+    trend_fit:fav.trend,
+    character_appeal:fav.appeal,
+    usability:fav.usability,
+    trend_fit_detail:fav.trend_detail||[],
+    character_appeal_detail:fav.appeal_detail||[],
+    usability_detail:fav.usage_detail||[],
+    target:fav.target||'',
+    summary:fav.summary||'',
+    strengths:fav.strengths||[],
+    improvements:fav.improvements||[],
+    strategy_tips:fav.tips||'',
+    approval_chance:fav.chance||'보통',
+    kakao_checklist:fav.kakao_checklist||null
+  };
+  lastResult=mapped;lastThumb=fav.thumb;
+  renderResult(mapped,fav.mode==='mine');
   switchTab('analyze');
-  document.getElementById('previewImg').src=fav.thumb;
-  document.getElementById('previewWrap').classList.add('show');
+  if(fav.thumb){
+    document.getElementById('previewImg').src=fav.thumb;
+    document.getElementById('previewWrap').classList.add('show');
+  }
   showToast('분석 탭에서 확인하세요');
 }
 
