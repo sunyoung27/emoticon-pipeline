@@ -1146,20 +1146,17 @@ async function runPlanGeneration(){
   const mines=h.filter(i=>i.mode==='mine').slice(0,10);
   const favs=f.slice(0,15);
 
-  const refSummary=refs.length?refs.map(i=>
-    `트렌드${i.trend}/매력${i.appeal}/사용성${i.usability} 타겟:${i.target||'?'} 요약:${i.summary} 강점:${(i.strengths||[]).join('/')}`
-  ).join('
-'):'(레퍼런스 없음)';
+  const refSummary=refs.length?refs.map(function(i){
+    return "트렌드"+i.trend+"/매력"+i.appeal+"/사용성"+i.usability+" 타겟:"+(i.target||"?")+" 요약:"+i.summary+" 강점:"+(i.strengths||[]).join("/");
+  }).join("\n"):"(레퍼런스 없음)";
 
-  const favSummary=favs.length?favs.map(i=>
-    `트렌드${i.trend}/매력${i.appeal}/사용성${i.usability} 타겟:${i.target||'?'} 요약:${i.summary}`
-  ).join('
-'):'(즐겨찾기 없음)';
+  const favSummary=favs.length?favs.map(function(i){
+    return "트렌드"+i.trend+"/매력"+i.appeal+"/사용성"+i.usability+" 타겟:"+(i.target||"?")+" 요약:"+i.summary;
+  }).join("\n"):"(즐겨찾기 없음)";
 
-  const mineSummary=mines.length?mines.map(i=>
-    `트렌드${i.trend}/매력${i.appeal}/사용성${i.usability} 심사:${i.chance||'?'} 강점:${(i.strengths||[]).join('/')} 개선:${(i.improvements||[]).join('/')}`
-  ).join('
-'):'(내 작품 평가 없음)';
+  const mineSummary=mines.length?mines.map(function(i){
+    return "트렌드"+i.trend+"/매력"+i.appeal+"/사용성"+i.usability+" 심사:"+(i.chance||"?")+" 강점:"+(i.strengths||[]).join("/")+" 개선:"+(i.improvements||[]).join("/");
+  }).join("\n"):"(내 작품 평가 없음)";
 
   try{
     const res=await fetch(API_URL,{
