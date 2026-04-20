@@ -989,7 +989,7 @@ ${favSummary}
     document.getElementById('tasteResult').innerHTML=`
       <div class="card">
         <div class="card-title">🎯 취향 분석 결과</div>
-        <div class="result-text">${text.replace(/\n/g,'<br>').replace(/##\s/g,'<br><strong style="color:var(--accent2);font-size:12px">').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>
+        <div        <div class="result-text" id="tasteTextContent"></div>
       </div>`;
   }catch(err){
     document.getElementById('tasteResult').innerHTML=`<div class="error-wrap">취향 분석 실패: ${err.message}</div>`;
