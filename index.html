@@ -352,14 +352,22 @@ window.addEventListener('DOMContentLoaded',()=>{
   // 기존 저장 데이터 썸네일 정리 (용량 절약)
   try{
     const h=DB.getHistory();
-    let changed=false;
+    const f=DB.getFavs();
+    let hChanged=false,fChanged=false;
     h.forEach(i=>{
-      if(i.thumb&&i.thumb.length>5000){
+      if(i.thumb&&i.thumb.length>3000){
         compressThumb(i.thumb,function(t){i.thumb=t;});
-        changed=true;
+        hChanged=true;
       }
     });
-    if(changed)setTimeout(()=>DB.saveHistory(h),2000);
+    f.forEach(i=>{
+      if(i.thumb&&i.thumb.length>3000){
+        compressThumb(i.thumb,function(t){i.thumb=t;});
+        fChanged=true;
+      }
+    });
+    if(hChanged)setTimeout(()=>DB.saveHistory(h),2000);
+    if(fChanged)setTimeout(()=>DB.saveFavs(f),2500);
   }catch(e){}
   const char=DB.getChar();
   if(char)document.getElementById('charDesc').value=char;
@@ -414,18 +422,18 @@ function clearAllData(){
 // ════════════════════════════
 // 이미지
 // ════════════════════════════
-// 썸네일 압축 (저장용 - 최대 120px, 퀄리티 0.5)
+// 썸네일 압축 (저장용 - 최대 80px, 퀄리티 0.35)
 function compressThumb(dataUrl, cb){
   const img=new Image();
   img.onload=function(){
-    const MAX=120;
+    const MAX=80;
     let w=img.width,h=img.height;
     if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}
     else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
     const canvas=document.createElement('canvas');
     canvas.width=w;canvas.height=h;
     canvas.getContext('2d').drawImage(img,0,0,w,h);
-    cb(canvas.toDataURL('image/jpeg',0.5));
+    cb(canvas.toDataURL('image/jpeg',0.35));
   };
   img.src=dataUrl;
 }
@@ -447,11 +455,11 @@ function handleFile(file){
       const result=e.target.result;
       if(!result||!result.includes(',')){showToast('이미지를 읽을 수 없어요');return}
       currentBase64=result.split(',')[1];
-      // 분석용 원본은 유지, 저장용 썸네일만 압축
-      compressThumb(result, function(thumb){
-        lastThumb=thumb;
-      });
+      // 분석용 원본 유지, 저장용 썸네일 압축
       lastThumb=result; // 즉시 할당 (압축 완료 전 분석 대비)
+      compressThumb(result, function(thumb){
+        lastThumb=thumb; // 압축 완료되면 교체
+      });
       document.getElementById('previewImg').src=result;
       document.getElementById('previewName').textContent=currentName+' ('+Math.round(file.size/1024)+'KB)';
       document.getElementById('previewWrap').classList.add('show');
