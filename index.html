@@ -574,13 +574,40 @@ async function runAnalysis(){
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:currentMime,data:currentBase64}},
           {type:'text',text:`이 카카오 이모티콘 이미지를 보고 아래 항목을 사실 그대로만 묘사하세요. 평가나 판단 없이 보이는 것만 기록하세요.
-1. 그림체: 선의 느낌(손그림/디지털클린/수채화), 선 굵기, 불규칙성 여부
-2. 색상: 사용 색상 수, 주요 색상명, 배경 유무
-3. 캐릭터: 어떤 캐릭터인지, 특징적 요소, 표정 종류와 개수(세어서)
-4. 텍스트: 포함된 문구 모두 나열
-5. 상황: 각 컷의 감정/상황
-6. 전체 컷 수
-7. 이 이모티콘이 주로 어떤 관계/상황에서 쓰일 것 같은지 (텍스트와 그림 내용 근거로)`}
+
+[기본 정보]
+1. 전체 컷 수
+2. 이모티콘 종류 추정: 멈춰있는/움직이는/소리나는 중 어느 것으로 보이는가
+
+[선 스타일 - 매우 자세히 관찰]
+3. 선의 종류: 손그림(붓/펜/연필), 디지털 클린선, 수채화 번짐, 무선(선 없음) 중 무엇인가
+4. 선 굵기: 매우 가늘다/가늘다/보통/굵다/매우 굵다
+5. 선의 일관성: 전체 컷에서 선 굵기와 스타일이 일관되는가
+6. 선의 불규칙성: 손으로 그린 느낌의 떨림/불규칙함이 있는가 (있음/없음/약간)
+7. 테두리: 테두리 있음/없음, 있다면 색상
+
+[색상]
+8. 사용 색상 수 (대략)
+9. 주요 색상명 (파스텔/원색/무채색/어두운톤 등)
+10. 배경: 없음/흰색/단색/패턴 중 무엇인가
+11. 전체 색감 톤: 밝고 화사함/차분함/어두움/알록달록함
+
+[캐릭터]
+12. 캐릭터 종류: 동물/사람/사물/음식/추상 중 무엇인가, 구체적으로 어떤 캐릭터인지
+13. 캐릭터 형태: 단순화(심플)/세밀한 편/매우 세밀함
+14. 표정 종류와 개수 (세어서)
+15. 캐릭터만의 시그니처 요소 (특징적 아이템/포즈/스타일)
+
+[텍스트]
+16. 텍스트 유무, 있다면 포함된 문구 모두 나열
+17. 폰트 느낌: 손글씨/인쇄체/귀여운체 중 무엇인가
+18. 텍스트 위치: 캐릭터 위/아래/옆/없음
+
+[컨셉 & 타겟]
+19. 컨셉/스타일: 귀여움/병맛/감성/유머/따뜻함/쿨함 중 무엇에 가까운가
+20. 각 컷의 감정과 상황 (간략히)
+21. 주요 타겟 연령대 추정: 10대/20대/30대/40대 이상 중 어느 층에 어필할 것 같은가 (이유 포함)
+22. 주요 타겟 관계: 친구/연인/직장/가족/범용 중 무엇인가`}
         ]}]
       })
     });
@@ -695,9 +722,59 @@ function scoreColor(v){return v>=7?'high':v>=4?'mid':'low'}
 
 function renderResult(r,isMine){
   const cc=r.approval_chance==='높음'?'green':r.approval_chance==='낮음'?'red':'';
-  const trendItems=['그림체 일관성','배경 단순/없음','공감 텍스트 포함','색감 조화','유행 주제 반영'];
+  const trendItems=['선/그림체 일관성','배경 단순/없음','공감 텍스트 포함','색감 조화','현재 트렌드 부합'];
   const appealItems=['독창적 실루엣','캐릭터 일관성','표정 5종 이상','시그니처 요소','작은 크기 가독성'];
-  const usageItems=['타겟 상황 빈도 높음','비언어 감정 전달','타겟 내 감정 다양','범용 반응 컷 포함','양방향 공감 가능'];
+  const usageItems=['타겟 상황 빈도 높음','비언어 감정 전달','다양한 감정 커버','범용 반응 컷 포함','양방향 공감 가능'];
+
+  // 선 스타일 카드 HTML
+  const lineTypeLabel={'손그림-붓':'🖌️ 붓펜 손그림','손그림-펜':'✒️ 펜 손그림','손그림-연필':'✏️ 연필 손그림','디지털클린':'💻 디지털 클린선','수채화':'🎨 수채화','무선':'⬜ 무선(선 없음)'};
+  const handmadeColor={'강함':'var(--green)','약간':'var(--yellow)','없음':'var(--text3)'};
+  const lineCard=r.line_type?`
+    <div class="card">
+      <div class="card-title">✏️ 선 스타일 분석</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;border:1px solid var(--border)">
+          <div style="font-size:9px;color:var(--text3);margin-bottom:4px">선 종류</div>
+          <div style="font-size:12px;font-weight:800;color:var(--accent2)">${lineTypeLabel[r.line_type]||r.line_type}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;border:1px solid var(--border)">
+          <div style="font-size:9px;color:var(--text3);margin-bottom:4px">선 굵기</div>
+          <div style="font-size:12px;font-weight:800;color:var(--accent2)">${r.line_weight||'-'}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;border:1px solid var(--border)">
+          <div style="font-size:9px;color:var(--text3);margin-bottom:4px">선 일관성</div>
+          <div style="font-size:12px;font-weight:800;color:${r.line_consistency?'var(--green)':'var(--red)'}">${r.line_consistency?'✓ 일관됨':'✗ 불일치'}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;border:1px solid var(--border)">
+          <div style="font-size:9px;color:var(--text3);margin-bottom:4px">손그림 느낌</div>
+          <div style="font-size:12px;font-weight:800;color:${handmadeColor[r.line_handmade_feel]||'var(--text3)'}">${r.line_handmade_feel||'-'}</div>
+        </div>
+      </div>
+      ${r.line_appeal?`<div style="font-size:11px;color:var(--text2);padding:8px;background:rgba(124,106,247,0.08);border-radius:8px;line-height:1.6">💡 ${r.line_appeal}</div>`:''}
+    </div>`:'';
+
+  // 시장 포지셔닝 카드
+  const conceptColor={'귀여움':'var(--star)','병맛':'var(--red)','감성':'#a89eff','유머':'var(--green)','따뜻함':'#ff9a6c','쿨함':'#6adbff'};
+  const posCard=(r.concept||r.color_tone||r.target_age)?`
+    <div class="card">
+      <div class="card-title">📊 시장 포지셔닝</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+        ${r.concept?`<span class="tag" style="background:rgba(255,209,102,0.1);border-color:rgba(255,209,102,0.3);color:${conceptColor[r.concept]||'var(--text2)'}">🎭 ${r.concept}</span>`:''}
+        ${r.color_tone?`<span class="tag">🎨 ${r.color_tone}</span>`:''}
+        ${r.char_type?`<span class="tag">🐾 ${r.char_type}</span>`:''}
+        ${r.target_relation?`<span class="tag">💬 ${r.target_relation} 타겟</span>`:''}
+      </div>
+      ${r.target_age&&r.target_age.length?`
+      <div>
+        <div style="font-size:9px;color:var(--text3);margin-bottom:5px;font-weight:800;letter-spacing:1px">주요 구매 연령대</div>
+        <div style="display:flex;gap:6px">
+          ${['10대','20대','30대','40대'].map(age=>`
+            <div style="flex:1;text-align:center;padding:6px 4px;border-radius:8px;background:${(r.target_age||[]).includes(age)?'rgba(124,106,247,0.2)':'var(--bg3)'};border:1px solid ${(r.target_age||[]).includes(age)?'var(--accent)':'var(--border)'}">
+              <div style="font-size:10px;font-weight:800;color:${(r.target_age||[]).includes(age)?'var(--accent2)':'var(--text3)'}">${age}</div>
+            </div>`).join('')}
+        </div>
+      </div>`:''}
+    </div>`:'';
 
   function checkList(items,detail){
     const ok=detail||[];
@@ -715,6 +792,8 @@ function renderResult(r,isMine){
 
   document.getElementById('resultBox').innerHTML=`
     ${mineWarning}
+    ${lineCard}
+    ${posCard}
     <div class="card">
       <div class="card-title">분석 점수</div>
       <div class="scores-row">
@@ -832,7 +911,13 @@ function persistHistory(r){
     strengths:r.strengths||[],improvements:r.improvements||[],
     trend_detail:r.trend_fit_detail||[],
     appeal_detail:r.character_appeal_detail||[],
-    usage_detail:r.usability_detail||[]
+    usage_detail:r.usability_detail||[],
+    line_type:r.line_type||'',line_weight:r.line_weight||'',
+    line_consistency:r.line_consistency,line_handmade_feel:r.line_handmade_feel||'',
+    line_appeal:r.line_appeal||'',
+    concept:r.concept||'',color_tone:r.color_tone||'',
+    target_age:r.target_age||[],target_relation:r.target_relation||'',
+    char_type:r.char_type||''
   });
   if(h.length>200)h.pop();
   try{DB.saveHistory(h);}catch(e){
@@ -864,12 +949,18 @@ function toggleFavFromResult(){
       thumb:lastThumb,
       mode:currentMode,
       trend:lastResult.trend_fit,appeal:lastResult.character_appeal,usability:lastResult.usability,
-      summary:lastResult.summary,tips:lastResult.strategy_tips,
+      summary:lastResult.summary,tips:lastResult.strategy_tips,chance:lastResult.approval_chance||'보통',
       target:lastResult.target||'',
       strengths:lastResult.strengths||[],improvements:lastResult.improvements||[],
       trend_detail:lastResult.trend_fit_detail||[],
       appeal_detail:lastResult.character_appeal_detail||[],
-      usage_detail:lastResult.usability_detail||[]
+      usage_detail:lastResult.usability_detail||[],
+      line_type:lastResult.line_type||'',line_weight:lastResult.line_weight||'',
+      line_handmade_feel:lastResult.line_handmade_feel||'',
+      line_appeal:lastResult.line_appeal||'',
+      concept:lastResult.concept||'',color_tone:lastResult.color_tone||'',
+      target_age:lastResult.target_age||[],target_relation:lastResult.target_relation||'',
+      char_type:lastResult.char_type||''
     });
     DB.saveFavs(favs);
     showToast('⭐ 즐겨찾기에 저장했어요!');
@@ -991,19 +1082,26 @@ ${favSummary}
 위 데이터를 분석해서 다음을 알려주세요:
 
 ## 1. 내 취향 패턴
-- 내가 선호하는 그림체/스타일은?
-- 선호하는 타겟/주제는?
+- 내가 선호하는 선 스타일은? (선 종류, 굵기, 손그림 느낌 선호도)
+- 선호하는 컨셉/색감은?
+- 선호하는 타겟 연령대와 관계는?
 - 높은 점수를 준 이모티콘의 공통점은?
-- 체크리스트 기준으로 자주 충족된 항목은?
 
-## 2. 내 취향 키워드 (5~7개)
-예: 손그림체 / 직장인 공감 / 귀찮음 표현 / 단색 배경 등
+## 2. 선 스타일 취향 분석 (중점 분석)
+즐겨찾기한 이모티콘들의 선 스타일 패턴:
+- 가장 많이 등장한 선 종류
+- 손그림 느낌 선호 강도
+- 내가 그릴 이모티콘에 추천하는 선 스타일과 이유
 
-## 3. 내 이모티콘 기획 방향 제안
-취향 데이터를 바탕으로:
-- 추천 캐릭터 컨셉 (아직 없다면 새로 제안, 있다면 발전 방향)
+## 3. 시장 포지셔닝 분석
+- 내가 좋아하는 이모티콘의 주 타겟 연령대
+- 컨셉/색감 패턴
+- 비어있는 시장 틈새 (내가 좋아하는 스타일 중 아직 많지 않은 것)
+
+## 4. 내 이모티콘 기획 방향 제안
+- 추천 선 스타일 (구체적으로: 선 종류/굵기/손그림 정도)
+- 추천 컨셉과 타겟
 - 반드시 포함해야 할 감정/상황 TOP 5
-- 피해야 할 요소
 - 카카오 승인 가능성을 높이는 핵심 전략 3가지`}]
       })
     });
